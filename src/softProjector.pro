@@ -30,7 +30,7 @@ QT += core \
     multimediawidgets \
     websockets
 
-TARGET = SoftProjector
+TARGET = SoftProjector3
 TEMPLATE = app
 CONFIG += x86 ppc x86_64 ppc64 # Compile a universal build
 
