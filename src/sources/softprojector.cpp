@@ -198,7 +198,7 @@ SoftProjector::SoftProjector(QWidget *parent)
     connect(mediaControls,SIGNAL(muted(bool)),pds1,SLOT(setVideoMuted(bool)));
     connect(mediaControls,SIGNAL(timeChanged(qint64)),this,SLOT(setVideoPosition(qint64)));
 
-    version_string = "2.2";
+    version_string = "3.0";
     this->setWindowTitle("SoftProjector " + version_string);
 
     // Song verse split hidden by default.

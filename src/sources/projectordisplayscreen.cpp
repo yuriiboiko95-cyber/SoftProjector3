@@ -18,6 +18,8 @@
 ***************************************************************************/
 
 #include "../3rdparty/headers/qmediaplaylist.h"
+#include <QDebug>
+#include <QQmlError>
 #include "../headers/projectordisplayscreen.hpp"
 #include "ui_projectordisplayscreen.h"
 
@@ -32,19 +34,32 @@ ProjectorDisplayScreen::ProjectorDisplayScreen(QWidget *parent) :
     dispView->engine()->addImageProvider(QLatin1String("improvider"),imProvider);
     QWidget *w = QWidget::createWindowContainer(dispView,this);
     dispView->setSource(QUrl("qrc:/qml/qml/DisplayArea.qml"));
+    if (dispView->status() == QQuickView::Error)
+    {
+        qWarning("ProjectorDisplayScreen: failed to load qml source qrc:/qml/qml/DisplayArea.qml");
+        for (const QQmlError &error : dispView->errors())
+            qWarning("%s", qPrintable(error.toString()));
+    }
     ui->verticalLayout->addWidget(w);
 
-    // Create Display object for retriaving signals back from the display screen
+    // Create Display object for retrieving signals back from the display screen
     QObject *dispObj = dispView->rootObject();
-    connect(dispObj,SIGNAL(exitClicked()),this,SLOT(exitSlideClicked()));
-    connect(dispObj,SIGNAL(nextClicked()),this,SLOT(nextSlideClicked()));
-    connect(dispObj,SIGNAL(prevClicked()),this,SLOT(prevSlideClicked()));
+    if (dispObj)
+    {
+        connect(dispObj,SIGNAL(exitClicked()),this,SLOT(exitSlideClicked()));
+        connect(dispObj,SIGNAL(nextClicked()),this,SLOT(nextSlideClicked()));
+        connect(dispObj,SIGNAL(prevClicked()),this,SLOT(prevSlideClicked()));
 
-    // Connect Media Player objects
-    connect(dispObj,SIGNAL(positionChanged(int)),this,SLOT(videoPositionChanged(int)));
-    connect(dispObj,SIGNAL(durationChanged(int)),this,SLOT(videoDurationChanged(int)));
-    connect(dispObj,SIGNAL(playbackStateChanged(int)),this,SLOT(videoPlaybackStateChanged(int)));
-    connect(dispObj,SIGNAL(playbackStopped()),this,SLOT(playbackStopped()));
+        // Connect Media Player objects
+        connect(dispObj,SIGNAL(positionChanged(int)),this,SLOT(videoPositionChanged(int)));
+        connect(dispObj,SIGNAL(durationChanged(int)),this,SLOT(videoDurationChanged(int)));
+        connect(dispObj,SIGNAL(playbackStateChanged(int)),this,SLOT(videoPlaybackStateChanged(int)));
+        connect(dispObj,SIGNAL(playbackStopped()),this,SLOT(playbackStopped()));
+    }
+    else
+    {
+        qWarning("ProjectorDisplayScreen: failed to load qrc:/qml/qml/DisplayArea.qml");
+    }
 
     backImSwitch1 = backImSwitch2 = textImSwitch1 = textImSwitch2 = false;
     back1to2 = text1to2 = isNewBack = true;
@@ -93,8 +108,12 @@ void ProjectorDisplayScreen::setBackPixmap(QPixmap p, int fillMode)
     imProvider->setPixMap(p);
     back1to2 = (!back1to2);
 
-    QObject *item1 = dispView->rootObject()->findChild<QObject*>("backImage1");
-    QObject *item2 = dispView->rootObject()->findChild<QObject*>("backImage2");
+    QObject *root = dispView->rootObject();
+    if (!root)
+        return;
+
+    QObject *item1 = root->findChild<QObject*>("backImage1");
+    QObject *item2 = root->findChild<QObject*>("backImage2");
     if(item1 && item2)
     {
         if(back1to2)
@@ -148,8 +167,12 @@ void ProjectorDisplayScreen::setTextPixmap(QPixmap p)
     imProvider->setPixMap(p);
     text1to2 = (!text1to2);
 
-    QObject *item1 = dispView->rootObject()->findChild<QObject*>("textImage1");
-    QObject *item2 = dispView->rootObject()->findChild<QObject*>("textImage2");
+    QObject *root = dispView->rootObject();
+    if (!root)
+        return;
+
+    QObject *item1 = root->findChild<QObject*>("textImage1");
+    QObject *item2 = root->findChild<QObject*>("textImage2");
     if(item1 && item2)
     {
         if(text1to2)
@@ -173,8 +196,14 @@ void ProjectorDisplayScreen::setTextPixmap(QPixmap p)
 
 void ProjectorDisplayScreen::setBackVideo(QString path)
 {
-    QObject *item = dispView->rootObject()->findChild<QObject*>("player");
-    QObject *item2 = dispView->rootObject()->findChild<QObject*>("vidOut");
+    QObject *root = dispView->rootObject();
+    if (!root)
+        return;
+
+    QObject *item = root->findChild<QObject*>("player");
+    QObject *item2 = root->findChild<QObject*>("vidOut");
+    if (!item || !item2)
+        return;
 
     setVideoSource(item,path);
     item->setProperty("volume",0.0);
@@ -184,17 +213,21 @@ void ProjectorDisplayScreen::setBackVideo(QString path)
 
 void ProjectorDisplayScreen::setVideoSource(QObject* playerObject, QUrl path)
 {
-//#if  (defined(Q_OS_UNIX))
-//    // Prefix "file://" to the file name only for Unix like systems.
-//    path = "file://" + path;
-//#endif
-//    playerObject->setProperty("source",path);
+    if (!playerObject)
+        return;
+
+    if (!path.isValid())
+        return;
+
     playerObject->setProperty("source",path.toString());
 }
 
 void ProjectorDisplayScreen::updateScreen()
 {
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
+
     QMetaObject::invokeMethod(root,"stopTransitions");
     //    QString tranType = "seq";
 
@@ -440,9 +473,15 @@ void ProjectorDisplayScreen::renderVideo(VideoInfo videoDetails)
     backType = B_VIDEO;
     setTextPixmap(imGen.generateEmptyImage());
     setBackPixmap(imGen.generateColorImage(m_color),0);
+
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
+
     QObject *item = root->findChild<QObject*>("player");
     QObject *item2 = root->findChild<QObject*>("vidOut");
+    if (!item || !item2)
+        return;
 
     setVideoSource(item,videoDetails.filePath);
 
@@ -456,18 +495,24 @@ void ProjectorDisplayScreen::renderVideo(VideoInfo videoDetails)
 void ProjectorDisplayScreen::playVideo()
 {
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
     QMetaObject::invokeMethod(root,"playVideo");
 }
 
 void ProjectorDisplayScreen::pauseVideo()
 {
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
     QMetaObject::invokeMethod(root,"pauseVideo");
 }
 
 void ProjectorDisplayScreen::stopVideo()
 {
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
     QMetaObject::invokeMethod(root,"stopVideo");
 }
 
@@ -480,18 +525,24 @@ void ProjectorDisplayScreen::setVideoVolume(int level)
 {
     float vol = 1.0*level/100;
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
     QMetaObject::invokeMethod(root,"setVideoVolume",Q_ARG(QVariant,vol));
 }
 
 void ProjectorDisplayScreen::setVideoMuted(bool muted)
 {
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
     QMetaObject::invokeMethod(root,"setVideoVolume",Q_ARG(QVariant,(!muted)));
 }
 
 void ProjectorDisplayScreen::setVideoPosition(qint64 position)
 {
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
     QMetaObject::invokeMethod(root,"setVideoPosition",Q_ARG(QVariant,position));
 }
 
@@ -542,6 +593,8 @@ void ProjectorDisplayScreen::positionControls(DisplayControlsSettings &dSettings
         x = (x-xt)/2;
 
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
     QMetaObject::invokeMethod(root,"positionControls",Q_ARG(QVariant,x),Q_ARG(QVariant,y),Q_ARG(QVariant,buttonSize),Q_ARG(QVariant,dSettings.opacity));
 
 }
@@ -549,5 +602,7 @@ void ProjectorDisplayScreen::positionControls(DisplayControlsSettings &dSettings
 void ProjectorDisplayScreen::setControlsVisible(bool visible)
 {
     QObject *root = dispView->rootObject();
+    if (!root)
+        return;
     QMetaObject::invokeMethod(root,"setControlsVisible",Q_ARG(QVariant,visible));
 }

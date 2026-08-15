@@ -38,6 +38,8 @@ RES_DIR = $${PWD}/unknownsys_build
 win32: RES_DIR = $${PWD}/win32_build
 unix:  RES_DIR = $${PWD}/unix_build
 macx: RES_DIR = $${PWD}/mac_build
+macx: ICON = $${PWD}/mac_build/resources/SoftProjector3.icns
+macx: QMAKE_INFO_PLIST = $${PWD}/mac_build/resources/Info.plist
 
 DESTDIR = $${RES_DIR}/bin
 OBJECTS_DIR = $${RES_DIR}/obj
