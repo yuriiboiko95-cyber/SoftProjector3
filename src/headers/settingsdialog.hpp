@@ -55,6 +55,7 @@ signals:
     void positionsDisplayWindow();
     void updateScreen();
     void httpServerState(bool& state, QString& httpServerIPAddress, int& httpServerPort, int& webSocketServerPort);
+    void proclaimServerState(bool& state, QString& proclaimIPAddress, int& proclaimHttpPort, int& proclaimWebSocketPort);
 
 private:
     Ui::SettingsDialog *ui;
@@ -69,6 +70,10 @@ private:
     QString currentHTTPServerIPAddress;
     int currentHTTPPort;
     int currentWebSocketPort;
+
+    bool currentProclaimEnabled;
+    int currentProclaimHttpPort;
+    int currentProclaimWebSocketPort;
 
     GeneralSettings gsettings;
     Theme theme;

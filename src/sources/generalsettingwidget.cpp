@@ -165,6 +165,11 @@ void GeneralSettingWidget::loadSettings()
     ui->spinBoxWebSocketPort->setValue(mySettings.webSocketServerPort);
     ui->checkBoxSendSongs->setChecked(mySettings.httpSendSongs);
     ui->checkBoxDisableScreens->setChecked(mySettings.disableScreens);
+
+    // Proclaim output
+    ui->checkBoxEnableProclaimServer->setChecked(mySettings.proclaimServerEnabled);
+    ui->spinBoxProclaimHttpPort->setValue(mySettings.proclaimHttpPort);
+    ui->spinBoxProclaimWebSocketPort->setValue(mySettings.proclaimWebSocketPort);
 }
 
 void GeneralSettingWidget::loadThemes()
@@ -212,6 +217,10 @@ GeneralSettings GeneralSettingWidget::getSettings()
     mySettings.webSocketServerPort = ui->spinBoxWebSocketPort->value();
     mySettings.httpSendSongs = ui->checkBoxSendSongs->isChecked();
     mySettings.disableScreens = ui->checkBoxDisableScreens->isChecked();
+
+    mySettings.proclaimServerEnabled = ui->checkBoxEnableProclaimServer->isChecked();
+    mySettings.proclaimHttpPort = ui->spinBoxProclaimHttpPort->value();
+    mySettings.proclaimWebSocketPort = ui->spinBoxProclaimWebSocketPort->value();
 
     return mySettings;
 }

@@ -105,5 +105,6 @@
     </qresource>
     <qresource prefix="/html">
         <file>html/httpserver.html</file>
+        <file>html/proclaimdisplay.html</file>
     </qresource>
 </RCC>

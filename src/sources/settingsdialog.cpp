@@ -83,6 +83,9 @@ void SettingsDialog::loadSettings(GeneralSettings &sets, Theme &thm, SlideShowSe
     currentHTTPServerIPAddress = gsettings.httpServerIPAddress;
     currentHTTPPort = gsettings.httpServerPort;
     currentWebSocketPort = gsettings.webSocketServerPort;
+    currentProclaimEnabled = gsettings.proclaimServerEnabled;
+    currentProclaimHttpPort = gsettings.proclaimHttpPort;
+    currentProclaimWebSocketPort = gsettings.proclaimWebSocketPort;
 
     // Set individual items
     generalSettingswidget->setSettings(gsettings);
@@ -192,6 +195,15 @@ void SettingsDialog::applySettings()
         emit httpServerState(gsettings.httpServerEnabled,gsettings.httpServerIPAddress,gsettings.httpServerPort,gsettings.webSocketServerPort);
     }
 
+    // Update Proclaim server state (shares the same IP address field as the HTTP server above)
+    if(currentHTTPServerIPAddress != gsettings.httpServerIPAddress
+            || currentProclaimHttpPort != gsettings.proclaimHttpPort
+            || currentProclaimWebSocketPort != gsettings.proclaimWebSocketPort
+            || currentProclaimEnabled != gsettings.proclaimServerEnabled)
+    {
+        emit proclaimServerState(gsettings.proclaimServerEnabled,gsettings.httpServerIPAddress,gsettings.proclaimHttpPort,gsettings.proclaimWebSocketPort);
+    }
+
     // Save Settings
     theme.saveThemeUpdate();
 
@@ -205,6 +217,9 @@ void SettingsDialog::applySettings()
     currentHTTPServerIPAddress = gsettings.httpServerIPAddress;
     currentHTTPPort = gsettings.httpServerPort;
     currentWebSocketPort = gsettings.webSocketServerPort;
+    currentProclaimEnabled = gsettings.proclaimServerEnabled;
+    currentProclaimHttpPort = gsettings.proclaimHttpPort;
+    currentProclaimWebSocketPort = gsettings.proclaimWebSocketPort;
 }
 
 void SettingsDialog::getThemes()

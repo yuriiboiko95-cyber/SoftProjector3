@@ -315,6 +315,9 @@ public:
     int httpServerPort;
     bool httpSendSongs;
     bool disableScreens;
+    bool proclaimServerEnabled;
+    int proclaimHttpPort;
+    int proclaimWebSocketPort;
 };
 
 class DisplaySettings

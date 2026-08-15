@@ -18,10 +18,13 @@
 ***************************************************************************/
 
 #include <QWidget>
+#include <QBuffer>
 #include "../headers/softprojector.hpp"
 #include "ui_softprojector.h"
 #include "../headers/aboutdialog.hpp"
 #include "../headers/editannouncementdialog.hpp"
+#include "../headers/imagegenerator.hpp"
+#include "../headers/spfunctions.hpp"
 
 SoftProjector::SoftProjector(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::SoftProjectorClass)
@@ -65,6 +68,14 @@ SoftProjector::SoftProjector(QWidget *parent)
     if (mySettings.general.httpServerEnabled) {
         webSocketServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.webSocketServerPort);
         httpServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.httpServerPort, mySettings.general.webSocketServerPort);
+    }
+
+    proclaimWebSocketServer = new WebSocketServer();
+    proclaimHttpServer = new HttpServer();
+    proclaimHttpServer->setHtmlResourcePath(":/html/html/proclaimdisplay.html");
+    if (mySettings.general.proclaimServerEnabled) {
+        proclaimWebSocketServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.proclaimWebSocketPort);
+        proclaimHttpServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.proclaimHttpPort, mySettings.general.proclaimWebSocketPort);
     }
 
     ui->setupUi(this);
@@ -126,6 +137,7 @@ SoftProjector::SoftProjector(QWidget *parent)
     connect(settingsDialog,SIGNAL(positionsDisplayWindow()),this,SLOT(positionDisplayWindow()));
     connect(settingsDialog,SIGNAL(updateScreen()),this,SLOT(updateScreen()));
     connect(settingsDialog,SIGNAL(httpServerState(bool&,QString&,int&,int&)),this,SLOT(httpServerState(bool&,QString&,int&,int&)));
+    connect(settingsDialog,SIGNAL(proclaimServerState(bool&,QString&,int&,int&)),this,SLOT(proclaimServerState(bool&,QString&,int&,int&)));
     connect(songWidget,SIGNAL(addToSchedule(Song&)),this,SLOT(addToShcedule(Song&)));
     connect(announceWidget,SIGNAL(addToSchedule(Announcement&)),this,SLOT(addToShcedule(Announcement&)));
 
@@ -506,6 +518,25 @@ void SoftProjector::httpServerState(bool &state, QString &httpServerIPAddress, i
     }
 }
 
+void SoftProjector::proclaimServerState(bool &state, QString &proclaimIPAddress, int &proclaimHttpPort, int &proclaimWebSocketPort)
+{
+    if (proclaimHttpServer->isRunning)
+        proclaimHttpServer->stopServer();
+
+    if (proclaimWebSocketServer->isRunning)
+        proclaimWebSocketServer->stopServer();
+
+    if (state) {
+        proclaimWebSocketServer->startServer(proclaimIPAddress, proclaimWebSocketPort);
+        proclaimHttpServer->startServer(proclaimIPAddress, proclaimHttpPort, proclaimWebSocketPort);
+
+        // If we are already showing a bible verse live, immediately send it to newly connected clients.
+        if (showing && pType == BIBLE) {
+            sendBibleVerseToServer();
+        }
+    }
+}
+
 void SoftProjector::closeEvent(QCloseEvent *event)
 {
     clearHttpOutput();
@@ -553,6 +584,10 @@ void SoftProjector::clearHttpOutput()
     if (mySettings.general.httpServerEnabled && webSocketServer)
     {
         webSocketServer->setBlank();
+    }
+    if (mySettings.general.proclaimServerEnabled && proclaimWebSocketServer)
+    {
+        proclaimWebSocketServer->setBlank();
     }
 }
 
@@ -718,7 +753,7 @@ void SoftProjector::setChapterList(QStringList chapter_list, QString caption, QI
     ui->listShow->setFocus();
     ui->listShow->blockSignals(false);
 
-    if (mySettings.general.httpServerEnabled)
+    if (anyVerseOutputEnabled())
     {
         qDebug() << "HTTP mode setChapterList(): showing=" << showing << " currentRow=" << selectedItems.first().top() << " pType=BIBLE";
         sendBibleVerseToServer();
@@ -871,7 +906,7 @@ void SoftProjector::on_listShow_itemSelectionChanged()
         ui->actionShow->setEnabled(true);
         return;
     }
-    if (mySettings.general.httpServerEnabled)
+    if (anyVerseOutputEnabled())
     {
         qDebug() << "HTTP mode on_listShow_itemSelectionChanged(): showing=" << showing << " pType=" << pType << " currentRow=" << ui->listShow->currentRow();
         if (!showing) {
@@ -1205,7 +1240,7 @@ void SoftProjector::showVideo()
 void SoftProjector::on_actionShow_triggered()
 {
     showing = true;
-    if (mySettings.general.httpServerEnabled)
+    if (anyVerseOutputEnabled())
     {
         qDebug() << "HTTP mode on_actionShow_triggered(): pType=" << pType << " currentRow=" << ui->listShow->currentRow();
         if (pType == BIBLE) {
@@ -1230,10 +1265,10 @@ void SoftProjector::on_actionShow_triggered()
 void SoftProjector::on_actionHide_triggered()
 {
     showing = false;
-    if (mySettings.general.httpServerEnabled)
+    if (anyVerseOutputEnabled())
     {
         qDebug() << "HTTP mode on_actionHide_triggered(): clearing web socket and projector";
-        webSocketServer->setBlank();
+        clearHttpOutput();
         updateScreen();
 
         ui->actionShow->setEnabled(true);
@@ -1260,7 +1295,7 @@ void SoftProjector::on_actionClear_triggered()
         pds4->renderNotText();
     }
 
-    if (mySettings.general.httpServerEnabled)
+    if (anyVerseOutputEnabled())
     {
         clearHttpOutput();
     }
@@ -1287,7 +1322,7 @@ void SoftProjector::on_actionCloseDisplay_triggered()
             pds4->showFullScreen();
         }
 
-        if (mySettings.general.httpServerEnabled && displayClosed && showing)
+        if (anyVerseOutputEnabled() && displayClosed && showing)
         {
             if (pType == BIBLE) {
                 sendBibleVerseToServer();
@@ -1317,7 +1352,7 @@ void SoftProjector::on_actionCloseDisplay_triggered()
             pds4->hide();
         }
 
-        if (mySettings.general.httpServerEnabled)
+        if (anyVerseOutputEnabled())
         {
             clearHttpOutput();
         }
@@ -1345,7 +1380,7 @@ void SoftProjector::on_listShow_doubleClicked(QModelIndex index)
 {
     // Called when the user double clicks on a row in the rightmost table.
     showing = true;
-    if (mySettings.general.httpServerEnabled)
+    if (anyVerseOutputEnabled())
     {
         if (pType == BIBLE) {
             sendBibleVerseToServer();
@@ -2946,6 +2981,11 @@ void SoftProjector::openScheduleItem(QSqlQuery &q, const int scid, Announcement 
 }
 
 
+bool SoftProjector::anyVerseOutputEnabled()
+{
+    return mySettings.general.httpServerEnabled || mySettings.general.proclaimServerEnabled;
+}
+
 void SoftProjector::sendBibleVerseToServer()
 {
     ui->songVerseSplitLayoutWidget->setVisible(false); // Hide the song split list if visible.
@@ -2957,7 +2997,48 @@ void SoftProjector::sendBibleVerseToServer()
         if(ui->listShow->item(i)->isSelected())
             currentRows.append(i);
     }
-    webSocketServer->setBibleText(bibleWidget->bible.getCurrentVerseAndCaption(currentRows,theme.bible, mySettings.bibleSets));
+
+    Verse verse = bibleWidget->bible.getCurrentVerseAndCaption(currentRows,theme.bible, mySettings.bibleSets);
+
+    if (mySettings.general.httpServerEnabled)
+        webSocketServer->setBibleText(verse);
+
+    if (mySettings.general.proclaimServerEnabled)
+        sendBibleImagesToProclaim(verse);
+}
+
+// Renders the verse with the exact same ImageGenerator call the native
+// projector display uses (ProjectorDisplayScreen::renderBibleText), so
+// Proclaim's Web Page item shows a pixel-identical copy of SoftProjector's
+// own themed background/font/color/alignment/shadow instead of an
+// unstyled approximation.
+void SoftProjector::sendBibleImagesToProclaim(Verse verse)
+{
+    ImageGenerator proclaimImGen;
+    proclaimImGen.setScreenSize(QSize(1920, 1080));
+
+    QPixmap textPix = proclaimImGen.generateBibleImage(verse, theme.bible);
+
+    QByteArray backgroundBytes;
+    QString backgroundMime;
+    if (theme.bible.useBackground) {
+        backgroundBytes = pixToByte(theme.bible.backgroundPix);
+        backgroundMime = "image/jpeg";
+    } else {
+        QColor transparent(0, 0, 0, 0);
+        QPixmap backgroundPix = proclaimImGen.generateColorImage(transparent);
+        QBuffer buffer(&backgroundBytes);
+        buffer.open(QIODevice::WriteOnly);
+        backgroundPix.save(&buffer, "PNG");
+        backgroundMime = "image/png";
+    }
+
+    QByteArray textBytes;
+    QBuffer textBuffer(&textBytes);
+    textBuffer.open(QIODevice::WriteOnly);
+    textPix.save(&textBuffer, "PNG");
+
+    proclaimWebSocketServer->setBibleImages(backgroundBytes, backgroundMime, textBytes, theme.bible.useFading);
 }
 
 /*

@@ -81,6 +81,15 @@ public:
     QCheckBox *checkBoxEnableHttpServer;
     QLabel *label_ipAddress;
     QLineEdit *lineEditHTTPServerIPAddress;
+    QGroupBox *groupBoxProclaim;
+    QGridLayout *gridLayout_proclaim;
+    QCheckBox *checkBoxEnableProclaimServer;
+    QLabel *label_proclaimIpNote;
+    QLabel *label_proclaimHttpPort;
+    QSpinBox *spinBoxProclaimHttpPort;
+    QSpacerItem *horizontalSpacer_proclaim;
+    QLabel *label_proclaimWebSocketPort;
+    QSpinBox *spinBoxProclaimWebSocketPort;
     QSpacerItem *verticalSpacer;
     QGridLayout *gridLayout_2;
     QPushButton *pushButtonDefault;
@@ -386,6 +395,58 @@ public:
 
         verticalLayout->addWidget(gridGroupBox);
 
+        groupBoxProclaim = new QGroupBox(GeneralSettingWidget);
+        groupBoxProclaim->setObjectName("groupBoxProclaim");
+        gridLayout_proclaim = new QGridLayout(groupBoxProclaim);
+        gridLayout_proclaim->setObjectName("gridLayout_proclaim");
+        gridLayout_proclaim->setContentsMargins(9, 9, 9, 9);
+        checkBoxEnableProclaimServer = new QCheckBox(groupBoxProclaim);
+        checkBoxEnableProclaimServer->setObjectName("checkBoxEnableProclaimServer");
+
+        gridLayout_proclaim->addWidget(checkBoxEnableProclaimServer, 0, 0, 1, 3);
+
+        label_proclaimIpNote = new QLabel(groupBoxProclaim);
+        label_proclaimIpNote->setObjectName("label_proclaimIpNote");
+
+        gridLayout_proclaim->addWidget(label_proclaimIpNote, 1, 0, 1, 3);
+
+        label_proclaimHttpPort = new QLabel(groupBoxProclaim);
+        label_proclaimHttpPort->setObjectName("label_proclaimHttpPort");
+
+        gridLayout_proclaim->addWidget(label_proclaimHttpPort, 2, 0, 1, 1);
+
+        spinBoxProclaimHttpPort = new QSpinBox(groupBoxProclaim);
+        spinBoxProclaimHttpPort->setObjectName("spinBoxProclaimHttpPort");
+        spinBoxProclaimHttpPort->setMinimumSize(QSize(60, 0));
+        spinBoxProclaimHttpPort->setFrame(true);
+        spinBoxProclaimHttpPort->setButtonSymbols(QAbstractSpinBox::NoButtons);
+        spinBoxProclaimHttpPort->setMaximum(9999);
+        spinBoxProclaimHttpPort->setValue(8090);
+
+        gridLayout_proclaim->addWidget(spinBoxProclaimHttpPort, 2, 1, 1, 1);
+
+        horizontalSpacer_proclaim = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+
+        gridLayout_proclaim->addItem(horizontalSpacer_proclaim, 2, 2, 1, 1);
+
+        label_proclaimWebSocketPort = new QLabel(groupBoxProclaim);
+        label_proclaimWebSocketPort->setObjectName("label_proclaimWebSocketPort");
+
+        gridLayout_proclaim->addWidget(label_proclaimWebSocketPort, 3, 0, 1, 1);
+
+        spinBoxProclaimWebSocketPort = new QSpinBox(groupBoxProclaim);
+        spinBoxProclaimWebSocketPort->setObjectName("spinBoxProclaimWebSocketPort");
+        spinBoxProclaimWebSocketPort->setMinimumSize(QSize(60, 0));
+        spinBoxProclaimWebSocketPort->setFrame(true);
+        spinBoxProclaimWebSocketPort->setButtonSymbols(QAbstractSpinBox::NoButtons);
+        spinBoxProclaimWebSocketPort->setMaximum(9999);
+        spinBoxProclaimWebSocketPort->setValue(8091);
+
+        gridLayout_proclaim->addWidget(spinBoxProclaimWebSocketPort, 3, 1, 1, 1);
+
+
+        verticalLayout->addWidget(groupBoxProclaim);
+
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
@@ -489,6 +550,14 @@ public:
         label_webSocketPort->setText(QCoreApplication::translate("GeneralSettingWidget", "WebSocket Port:", nullptr));
         checkBoxEnableHttpServer->setText(QCoreApplication::translate("GeneralSettingWidget", "Enable HTTP Server", nullptr));
         label_ipAddress->setText(QCoreApplication::translate("GeneralSettingWidget", "IP Address:", nullptr));
+        groupBoxProclaim->setTitle(QCoreApplication::translate("GeneralSettingWidget", "Proclaim Output (changes require restart)", nullptr));
+#if QT_CONFIG(tooltip)
+        checkBoxEnableProclaimServer->setToolTip(QCoreApplication::translate("GeneralSettingWidget", "Sends the live Bible verse (matching this app's own theme) to a separate output for use as a Proclaim Web Page item.", nullptr));
+#endif // QT_CONFIG(tooltip)
+        checkBoxEnableProclaimServer->setText(QCoreApplication::translate("GeneralSettingWidget", "Enable Proclaim Output", nullptr));
+        label_proclaimIpNote->setText(QCoreApplication::translate("GeneralSettingWidget", "Uses the same IP Address as the HTTP Server above.", nullptr));
+        label_proclaimHttpPort->setText(QCoreApplication::translate("GeneralSettingWidget", "HTTP Port:", nullptr));
+        label_proclaimWebSocketPort->setText(QCoreApplication::translate("GeneralSettingWidget", "WebSocket Port:", nullptr));
         pushButtonDefault->setText(QCoreApplication::translate("GeneralSettingWidget", "Reset All To Default", nullptr));
         (void)GeneralSettingWidget;
     } // retranslateUi
