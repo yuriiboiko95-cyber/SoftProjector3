@@ -58,11 +58,6 @@ void HttpServer::closingClient()
     socket->deleteLater();
 }
 
-void HttpServer::setHtmlResourcePath(QString path)
-{
-    htmlResourcePath = path;
-}
-
 void HttpServer::sendData()
 {
     QTcpSocket* socket = (QTcpSocket*)sender();
@@ -75,7 +70,7 @@ void HttpServer::sendData()
     // body until the socket closes.
     disconnect(socket, SIGNAL(readyRead()), this, SLOT(sendData()));
 
-    QFile file(htmlResourcePath);
+    QFile file(":/html/html/httpserver.html");
     if(!file.open(QFile::ReadOnly |
                   QFile::Text))
     {

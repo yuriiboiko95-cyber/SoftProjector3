@@ -35,7 +35,6 @@ public:
     HttpServer(QObject *parent = nullptr);
     void startServer(QString httpServerIPAddress, quint16 httpServerPort, quint16 webSocketServerPort);
     void stopServer();
-    void setHtmlResourcePath(QString path);
     bool isRunning;
 
 public slots:
@@ -48,7 +47,6 @@ private:
     QString ipAddress;
     quint16 httpPort;
     quint16 webSocketPort;
-    QString htmlResourcePath = ":/html/html/httpserver.html";
 
 signals:
 };

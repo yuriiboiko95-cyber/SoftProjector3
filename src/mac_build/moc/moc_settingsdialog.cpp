@@ -64,10 +64,6 @@ template <> constexpr inline auto SettingsDialog::qt_create_metaobjectdata<qt_me
         "int&",
         "httpServerPort",
         "webSocketServerPort",
-        "proclaimServerState",
-        "proclaimIPAddress",
-        "proclaimHttpPort",
-        "proclaimWebSocketPort",
         "loadSettings",
         "on_listWidget_currentRowChanged",
         "currentRow",
@@ -104,48 +100,44 @@ template <> constexpr inline auto SettingsDialog::qt_create_metaobjectdata<qt_me
         QtMocHelpers::SignalData<void(bool &, QString &, int &, int &)>(16, 2, QMC::AccessPublic, QMetaType::Void, {{
             { 0x80000000 | 17, 18 }, { 0x80000000 | 19, 20 }, { 0x80000000 | 21, 22 }, { 0x80000000 | 21, 23 },
         }}),
-        // Signal 'proclaimServerState'
-        QtMocHelpers::SignalData<void(bool &, QString &, int &, int &)>(24, 2, QMC::AccessPublic, QMetaType::Void, {{
-            { 0x80000000 | 17, 18 }, { 0x80000000 | 19, 25 }, { 0x80000000 | 21, 26 }, { 0x80000000 | 21, 27 },
-        }}),
         // Slot 'loadSettings'
-        QtMocHelpers::SlotData<void(GeneralSettings &, Theme &, SlideShowSettings &, BibleVersionSettings &, BibleVersionSettings &, BibleVersionSettings &, BibleVersionSettings &)>(28, 2, QMC::AccessPublic, QMetaType::Void, {{
+        QtMocHelpers::SlotData<void(GeneralSettings &, Theme &, SlideShowSettings &, BibleVersionSettings &, BibleVersionSettings &, BibleVersionSettings &, BibleVersionSettings &)>(24, 2, QMC::AccessPublic, QMetaType::Void, {{
             { 0x80000000 | 3, 4 }, { 0x80000000 | 5, 6 }, { 0x80000000 | 7, 8 }, { 0x80000000 | 9, 10 },
             { 0x80000000 | 9, 11 }, { 0x80000000 | 9, 12 }, { 0x80000000 | 9, 13 },
         }}),
         // Slot 'on_listWidget_currentRowChanged'
-        QtMocHelpers::SlotData<void(int)>(29, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 30 },
+        QtMocHelpers::SlotData<void(int)>(25, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 26 },
         }}),
         // Slot 'setUseDispScreen2'
-        QtMocHelpers::SlotData<void(bool)>(31, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 32 },
+        QtMocHelpers::SlotData<void(bool)>(27, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 28 },
         }}),
         // Slot 'setUseDispScreen3'
-        QtMocHelpers::SlotData<void(bool)>(33, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 32 },
+        QtMocHelpers::SlotData<void(bool)>(29, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 28 },
         }}),
         // Slot 'setUseDispScreen4'
-        QtMocHelpers::SlotData<void(bool)>(34, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 32 },
+        QtMocHelpers::SlotData<void(bool)>(30, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 28 },
         }}),
         // Slot 'on_buttonBox_clicked'
-        QtMocHelpers::SlotData<void(QAbstractButton *)>(35, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 36, 37 },
+        QtMocHelpers::SlotData<void(QAbstractButton *)>(31, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 32, 33 },
         }}),
         // Slot 'applySettings'
-        QtMocHelpers::SlotData<void()>(38, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(34, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'changeTheme'
-        QtMocHelpers::SlotData<void(int)>(39, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 40 },
+        QtMocHelpers::SlotData<void(int)>(35, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 36 },
         }}),
         // Slot 'getThemes'
-        QtMocHelpers::SlotData<void()>(41, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(37, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'setThemes'
-        QtMocHelpers::SlotData<void()>(42, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(38, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'applyToAllActive'
-        QtMocHelpers::SlotData<void(int, QString, QPixmap)>(43, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 44 }, { QMetaType::QString, 45 }, { 0x80000000 | 46, 47 },
+        QtMocHelpers::SlotData<void(int, QString, QPixmap)>(39, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 40 }, { QMetaType::QString, 41 }, { 0x80000000 | 42, 43 },
         }}),
     };
     QtMocHelpers::UintData qt_properties {
@@ -174,25 +166,24 @@ void SettingsDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 1: _t->positionsDisplayWindow(); break;
         case 2: _t->updateScreen(); break;
         case 3: _t->httpServerState((*reinterpret_cast<std::add_pointer_t<bool&>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString&>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<int&>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<int&>>(_a[4]))); break;
-        case 4: _t->proclaimServerState((*reinterpret_cast<std::add_pointer_t<bool&>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString&>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<int&>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<int&>>(_a[4]))); break;
-        case 5: _t->loadSettings((*reinterpret_cast<std::add_pointer_t<GeneralSettings&>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<Theme&>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<SlideShowSettings&>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<BibleVersionSettings&>>(_a[4])),(*reinterpret_cast<std::add_pointer_t<BibleVersionSettings&>>(_a[5])),(*reinterpret_cast<std::add_pointer_t<BibleVersionSettings&>>(_a[6])),(*reinterpret_cast<std::add_pointer_t<BibleVersionSettings&>>(_a[7]))); break;
-        case 6: _t->on_listWidget_currentRowChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
-        case 7: _t->setUseDispScreen2((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
-        case 8: _t->setUseDispScreen3((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
-        case 9: _t->setUseDispScreen4((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
-        case 10: _t->on_buttonBox_clicked((*reinterpret_cast<std::add_pointer_t<QAbstractButton*>>(_a[1]))); break;
-        case 11: _t->applySettings(); break;
-        case 12: _t->changeTheme((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
-        case 13: _t->getThemes(); break;
-        case 14: _t->setThemes(); break;
-        case 15: _t->applyToAllActive((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<QPixmap>>(_a[3]))); break;
+        case 4: _t->loadSettings((*reinterpret_cast<std::add_pointer_t<GeneralSettings&>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<Theme&>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<SlideShowSettings&>>(_a[3])),(*reinterpret_cast<std::add_pointer_t<BibleVersionSettings&>>(_a[4])),(*reinterpret_cast<std::add_pointer_t<BibleVersionSettings&>>(_a[5])),(*reinterpret_cast<std::add_pointer_t<BibleVersionSettings&>>(_a[6])),(*reinterpret_cast<std::add_pointer_t<BibleVersionSettings&>>(_a[7]))); break;
+        case 5: _t->on_listWidget_currentRowChanged((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 6: _t->setUseDispScreen2((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
+        case 7: _t->setUseDispScreen3((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
+        case 8: _t->setUseDispScreen4((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
+        case 9: _t->on_buttonBox_clicked((*reinterpret_cast<std::add_pointer_t<QAbstractButton*>>(_a[1]))); break;
+        case 10: _t->applySettings(); break;
+        case 11: _t->changeTheme((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 12: _t->getThemes(); break;
+        case 13: _t->setThemes(); break;
+        case 14: _t->applyToAllActive((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2])),(*reinterpret_cast<std::add_pointer_t<QPixmap>>(_a[3]))); break;
         default: ;
         }
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         switch (_id) {
         default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
-        case 10:
+        case 9:
             switch (*reinterpret_cast<int*>(_a[1])) {
             default: *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType(); break;
             case 0:
@@ -209,8 +200,6 @@ void SettingsDialog::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         if (QtMocHelpers::indexOfMethod<void (SettingsDialog::*)()>(_a, &SettingsDialog::updateScreen, 2))
             return;
         if (QtMocHelpers::indexOfMethod<void (SettingsDialog::*)(bool & , QString & , int & , int & )>(_a, &SettingsDialog::httpServerState, 3))
-            return;
-        if (QtMocHelpers::indexOfMethod<void (SettingsDialog::*)(bool & , QString & , int & , int & )>(_a, &SettingsDialog::proclaimServerState, 4))
             return;
     }
 }
@@ -234,14 +223,14 @@ int SettingsDialog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 16)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 15;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 16)
+        if (_id < 15)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 16;
+        _id -= 15;
     }
     return _id;
 }
@@ -268,11 +257,5 @@ void SettingsDialog::updateScreen()
 void SettingsDialog::httpServerState(bool & _t1, QString & _t2, int & _t3, int & _t4)
 {
     QMetaObject::activate<void>(this, &staticMetaObject, 3, nullptr, _t1, _t2, _t3, _t4);
-}
-
-// SIGNAL 4
-void SettingsDialog::proclaimServerState(bool & _t1, QString & _t2, int & _t3, int & _t4)
-{
-    QMetaObject::activate<void>(this, &staticMetaObject, 4, nullptr, _t1, _t2, _t3, _t4);
 }
 QT_WARNING_POP

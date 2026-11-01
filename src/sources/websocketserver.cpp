@@ -112,17 +112,6 @@ void WebSocketServer::setSongText(QString verse, QString verseTranslation, QStri
     sendToClients();
 }
 
-void WebSocketServer::setContentImages(QByteArray backgroundBytes, QString backgroundMime, QByteArray textBytes, bool useFading)
-{
-    jsonOutput = QJsonObject();
-
-    jsonOutput["backgroundImage"] = "data:" + backgroundMime + ";base64," + QString::fromLatin1(backgroundBytes.toBase64());
-    jsonOutput["textImage"] = "data:image/png;base64," + QString::fromLatin1(textBytes.toBase64());
-    jsonOutput["useFading"] = useFading;
-
-    sendToClients();
-}
-
 void WebSocketServer::setBlank()
 {
     jsonOutput = QJsonObject();

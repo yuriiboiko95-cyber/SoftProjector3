@@ -18,12 +18,10 @@
 ***************************************************************************/
 
 #include <QWidget>
-#include <QBuffer>
 #include "../headers/softprojector.hpp"
 #include "ui_softprojector.h"
 #include "../headers/aboutdialog.hpp"
 #include "../headers/editannouncementdialog.hpp"
-#include "../headers/imagegenerator.hpp"
 #include "../headers/spfunctions.hpp"
 
 SoftProjector::SoftProjector(QWidget *parent)
@@ -68,17 +66,6 @@ SoftProjector::SoftProjector(QWidget *parent)
     if (mySettings.general.httpServerEnabled) {
         webSocketServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.webSocketServerPort);
         httpServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.httpServerPort, mySettings.general.webSocketServerPort);
-    }
-
-    proclaimWebSocketServer = new WebSocketServer();
-    proclaimHttpServer = new HttpServer();
-    proclaimHttpServer->setHtmlResourcePath(":/html/html/proclaimdisplay.html");
-    if (mySettings.general.proclaimServerEnabled) {
-        proclaimWebSocketServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.proclaimWebSocketPort);
-        proclaimHttpServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.proclaimHttpPort, mySettings.general.proclaimWebSocketPort);
-        // Push the passive background immediately so a client connecting
-        // before any verse is shown doesn't just see a black screen.
-        sendPassiveImagesToProclaim();
     }
 
     ui->setupUi(this);
@@ -146,7 +133,6 @@ SoftProjector::SoftProjector(QWidget *parent)
     connect(settingsDialog,SIGNAL(positionsDisplayWindow()),this,SLOT(positionDisplayWindow()));
     connect(settingsDialog,SIGNAL(updateScreen()),this,SLOT(updateScreen()));
     connect(settingsDialog,SIGNAL(httpServerState(bool&,QString&,int&,int&)),this,SLOT(httpServerState(bool&,QString&,int&,int&)));
-    connect(settingsDialog,SIGNAL(proclaimServerState(bool&,QString&,int&,int&)),this,SLOT(proclaimServerState(bool&,QString&,int&,int&)));
     connect(songWidget,SIGNAL(addToSchedule(Song&)),this,SLOT(addToShcedule(Song&)));
     connect(announceWidget,SIGNAL(addToSchedule(Announcement&)),this,SLOT(addToShcedule(Announcement&)));
 
@@ -530,29 +516,6 @@ void SoftProjector::httpServerState(bool &state, QString &httpServerIPAddress, i
     }
 }
 
-void SoftProjector::proclaimServerState(bool &state, QString &proclaimIPAddress, int &proclaimHttpPort, int &proclaimWebSocketPort)
-{
-    if (proclaimHttpServer->isRunning)
-        proclaimHttpServer->stopServer();
-
-    if (proclaimWebSocketServer->isRunning)
-        proclaimWebSocketServer->stopServer();
-
-    if (state) {
-        proclaimWebSocketServer->startServer(proclaimIPAddress, proclaimWebSocketPort);
-        proclaimHttpServer->startServer(proclaimIPAddress, proclaimHttpPort, proclaimWebSocketPort);
-
-        // Immediately send current state to newly connected clients, so they
-        // never just see a black screen: the live verse if one is showing,
-        // otherwise the passive background.
-        if (showing && pType == BIBLE) {
-            sendBibleVerseToServer();
-        } else {
-            sendPassiveImagesToProclaim();
-        }
-    }
-}
-
 void SoftProjector::closeEvent(QCloseEvent *event)
 {
     clearHttpOutput();
@@ -600,10 +563,6 @@ void SoftProjector::clearHttpOutput()
     if (mySettings.general.httpServerEnabled && webSocketServer)
     {
         webSocketServer->setBlank();
-    }
-    if (mySettings.general.proclaimServerEnabled && proclaimWebSocketServer)
-    {
-        proclaimWebSocketServer->setBlank();
     }
 }
 
@@ -770,7 +729,7 @@ void SoftProjector::setChapterList(QStringList chapter_list, QString caption, QI
     ui->listShow->setFocus();
     ui->listShow->blockSignals(false);
 
-    if (anyVerseOutputEnabled())
+    if (mySettings.general.httpServerEnabled)
     {
         qDebug() << "HTTP mode setChapterList(): showing=" << showing << " currentRow=" << selectedItems.first().top() << " pType=BIBLE";
         sendBibleVerseToServer();
@@ -923,7 +882,7 @@ void SoftProjector::on_listShow_itemSelectionChanged()
         ui->actionShow->setEnabled(true);
         return;
     }
-    if (anyVerseOutputEnabled())
+    if (mySettings.general.httpServerEnabled)
     {
         qDebug() << "HTTP mode on_listShow_itemSelectionChanged(): showing=" << showing << " pType=" << pType << " currentRow=" << ui->listShow->currentRow();
         if (!showing) {
@@ -1001,9 +960,6 @@ void SoftProjector::updateScreen()
 
         }
 
-        if (mySettings.general.proclaimServerEnabled)
-            sendPassiveImagesToProclaim();
-
            stopVideo();
         ui->actionShow->setEnabled(true);
         ui->actionHide->setEnabled(false);
@@ -1062,27 +1018,6 @@ void SoftProjector::updateScreen()
         default:
             // ERROR Unown type to show.
             break;
-        }
-
-        if (mySettings.general.proclaimServerEnabled) {
-            if (pType == BIBLE) {
-                int srows(ui->listShow->count());
-                QList<int> currentRows;
-                for(int i(0); i<srows; ++i)
-                {
-                    if(ui->listShow->item(i)->isSelected())
-                        currentRows.append(i);
-                }
-                if (currentRows.isEmpty() && currentRow >= 0)
-                    currentRows.append(currentRow);
-                sendBibleImagesToProclaim(bibleWidget->bible.getCurrentVerseAndCaption(
-                                              currentRows,theme.bible,mySettings.bibleSets));
-            } else if (pType == SONG) {
-                sendSongImagesToProclaim(current_song.getStanza(currentRow));
-            } else {
-                // Proclaim only handles Bible/Song content - show passive for anything else live.
-                sendPassiveImagesToProclaim();
-            }
         }
     }
 }
@@ -1291,7 +1226,7 @@ void SoftProjector::showVideo()
 void SoftProjector::on_actionShow_triggered()
 {
     showing = true;
-    if (anyVerseOutputEnabled())
+    if (mySettings.general.httpServerEnabled)
     {
         qDebug() << "HTTP mode on_actionShow_triggered(): pType=" << pType << " currentRow=" << ui->listShow->currentRow();
         if (pType == BIBLE) {
@@ -1327,7 +1262,7 @@ void SoftProjector::on_actionHide_triggered()
         return;
 
     showing = false;
-    if (anyVerseOutputEnabled())
+    if (mySettings.general.httpServerEnabled)
     {
         qDebug() << "HTTP mode on_actionHide_triggered(): clearing web socket and projector";
         clearHttpOutput();
@@ -1377,17 +1312,9 @@ void SoftProjector::on_actionClear_triggered()
             pds4->renderPassiveText(theme.passive.backgroundPix,theme.passive.useBackground);
     }
 
-    // OBS's output is a transparent overlay, so blanking it on Clear is
-    // correct. Proclaim's Web Page item is a full-screen replacement like
-    // the native display, so it should mirror the passive background
-    // here too, rather than going to a blank/black screen.
     if (mySettings.general.httpServerEnabled && webSocketServer)
     {
         webSocketServer->setBlank();
-    }
-    if (mySettings.general.proclaimServerEnabled)
-    {
-        sendPassiveImagesToProclaim();
     }
 
     ui->actionClear->setEnabled(false);
@@ -1412,7 +1339,7 @@ void SoftProjector::on_actionCloseDisplay_triggered()
             pds4->showFullScreen();
         }
 
-        if (anyVerseOutputEnabled() && displayClosed && showing)
+        if (mySettings.general.httpServerEnabled && displayClosed && showing)
         {
             if (pType == BIBLE) {
                 sendBibleVerseToServer();
@@ -1442,7 +1369,7 @@ void SoftProjector::on_actionCloseDisplay_triggered()
             pds4->hide();
         }
 
-        if (anyVerseOutputEnabled())
+        if (mySettings.general.httpServerEnabled)
         {
             clearHttpOutput();
         }
@@ -1470,7 +1397,7 @@ void SoftProjector::on_listShow_doubleClicked(QModelIndex index)
 {
     // Called when the user double clicks on a row in the rightmost table.
     showing = true;
-    if (anyVerseOutputEnabled())
+    if (mySettings.general.httpServerEnabled)
     {
         if (pType == BIBLE) {
             sendBibleVerseToServer();
@@ -3072,11 +2999,6 @@ void SoftProjector::openScheduleItem(QSqlQuery &q, const int scid, Announcement 
 }
 
 
-bool SoftProjector::anyVerseOutputEnabled()
-{
-    return mySettings.general.httpServerEnabled || mySettings.general.proclaimServerEnabled;
-}
-
 void SoftProjector::sendBibleVerseToServer()
 {
     ui->songVerseSplitLayoutWidget->setVisible(false); // Hide the song split list if visible.
@@ -3093,113 +3015,6 @@ void SoftProjector::sendBibleVerseToServer()
 
     if (mySettings.general.httpServerEnabled)
         webSocketServer->setBibleText(verse);
-
-    if (mySettings.general.proclaimServerEnabled)
-        sendBibleImagesToProclaim(verse);
-}
-
-// Renders the verse with the exact same ImageGenerator call the native
-// projector display uses (ProjectorDisplayScreen::renderBibleText), so
-// Proclaim's Web Page item shows a pixel-identical copy of SoftProjector's
-// own themed background/font/color/alignment/shadow instead of an
-// unstyled approximation.
-void SoftProjector::sendBibleImagesToProclaim(Verse verse)
-{
-    ImageGenerator proclaimImGen;
-    proclaimImGen.setScreenSize(QSize(1920, 1080));
-
-    QPixmap textPix = proclaimImGen.generateBibleImage(verse, theme.bible);
-
-    QByteArray backgroundBytes;
-    QString backgroundMime;
-    if (theme.bible.useBackground) {
-        backgroundBytes = pixToByte(theme.bible.backgroundPix);
-        backgroundMime = "image/jpeg";
-    } else {
-        QColor transparent(0, 0, 0, 0);
-        QPixmap backgroundPix = proclaimImGen.generateColorImage(transparent);
-        QBuffer buffer(&backgroundBytes);
-        buffer.open(QIODevice::WriteOnly);
-        backgroundPix.save(&buffer, "PNG");
-        backgroundMime = "image/png";
-    }
-
-    QByteArray textBytes;
-    QBuffer textBuffer(&textBytes);
-    textBuffer.open(QIODevice::WriteOnly);
-    textPix.save(&textBuffer, "PNG");
-
-    proclaimWebSocketServer->setContentImages(backgroundBytes, backgroundMime, textBytes, theme.bible.useFading);
-}
-
-// Renders a song stanza with the same ImageGenerator call the native
-// projector display uses (ProjectorDisplayScreen::renderSongText), mirroring
-// sendBibleImagesToProclaim. Always shows the full stanza, matching what the
-// native display shows - the OBS-only "split verse" lower-thirds mode isn't
-// something the native display (or Proclaim) renders.
-void SoftProjector::sendSongImagesToProclaim(Stanza stanza)
-{
-    SongSettings sSets = theme.song;
-    if (current_song.usePrivateSettings)
-        current_song.getSettings(sSets);
-
-    ImageGenerator proclaimImGen;
-    proclaimImGen.setScreenSize(QSize(1920, 1080));
-
-    QPixmap textPix = proclaimImGen.generateSongImage(stanza, sSets);
-
-    QByteArray backgroundBytes;
-    QString backgroundMime;
-    if (sSets.useBackground) {
-        backgroundBytes = pixToByte(sSets.backgroundPix);
-        backgroundMime = "image/jpeg";
-    } else {
-        QColor transparent(0, 0, 0, 0);
-        QPixmap backgroundPix = proclaimImGen.generateColorImage(transparent);
-        QBuffer buffer(&backgroundBytes);
-        buffer.open(QIODevice::WriteOnly);
-        backgroundPix.save(&buffer, "PNG");
-        backgroundMime = "image/png";
-    }
-
-    QByteArray textBytes;
-    QBuffer textBuffer(&textBytes);
-    textBuffer.open(QIODevice::WriteOnly);
-    textPix.save(&textBuffer, "PNG");
-
-    proclaimWebSocketServer->setContentImages(backgroundBytes, backgroundMime, textBytes, sSets.useFading);
-}
-
-// Pushes the passive (idle) background to Proclaim, with a blank text layer.
-// Used whenever a Bible verse isn't the thing currently live (idle, or
-// showing a song/picture/etc.), so Proclaim shows the same passive
-// background the native display does, instead of a stale verse or blank.
-void SoftProjector::sendPassiveImagesToProclaim()
-{
-    ImageGenerator proclaimImGen;
-    proclaimImGen.setScreenSize(QSize(1920, 1080));
-
-    QByteArray backgroundBytes;
-    QString backgroundMime;
-    if (theme.passive.useBackground) {
-        backgroundBytes = pixToByte(theme.passive.backgroundPix);
-        backgroundMime = "image/jpeg";
-    } else {
-        QColor transparent(0, 0, 0, 0);
-        QPixmap backgroundPix = proclaimImGen.generateColorImage(transparent);
-        QBuffer buffer(&backgroundBytes);
-        buffer.open(QIODevice::WriteOnly);
-        backgroundPix.save(&buffer, "PNG");
-        backgroundMime = "image/png";
-    }
-
-    QPixmap textPix = proclaimImGen.generateEmptyImage();
-    QByteArray textBytes;
-    QBuffer textBuffer(&textBytes);
-    textBuffer.open(QIODevice::WriteOnly);
-    textPix.save(&textBuffer, "PNG");
-
-    proclaimWebSocketServer->setContentImages(backgroundBytes, backgroundMime, textBytes, theme.passive.useFading);
 }
 
 /*

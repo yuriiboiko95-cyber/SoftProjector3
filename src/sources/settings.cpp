@@ -844,12 +844,6 @@ void Settings::loadSettings()
                     general.httpSendSongs = (v=="true");
                 else if (n == "disableScreens")
                     general.disableScreens = (v=="true");
-                else if (n == "proclaimServerEnabled")
-                    general.proclaimServerEnabled = (v=="true");
-                else if (n == "proclaimHttpPort")
-                    general.proclaimHttpPort = v.toInt();
-                else if (n == "proclaimWebSocketPort")
-                    general.proclaimWebSocketPort = v.toInt();
             }
         }
         else if(t == "spMain")
@@ -1017,12 +1011,6 @@ void Settings::saveSettings()
         gset += "\ndisableScreens = true";
     else
         gset += "\ndisableScreens = false";
-    if(general.proclaimServerEnabled)
-        gset += "\nproclaimServerEnabled = true";
-    else
-        gset += "\nproclaimServerEnabled = false";
-    gset += "\nproclaimHttpPort = " + QString::number(general.proclaimHttpPort);
-    gset += "\nproclaimWebSocketPort = " + QString::number(general.proclaimWebSocketPort);
 
     // **** prepare softProjector main settings
     spset += "spSplitter = " + spMain.spSplitter.toHex();

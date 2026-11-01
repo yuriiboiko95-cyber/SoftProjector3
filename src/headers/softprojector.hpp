@@ -80,8 +80,6 @@ public:
     MediaControl *mediaControls;
     WebSocketServer *webSocketServer;
     HttpServer *httpServer;
-    WebSocketServer *proclaimWebSocketServer;
-    HttpServer *proclaimHttpServer;
 
     bool showing; // whether we are currently showing to the projector
     Song current_song;
@@ -106,7 +104,6 @@ public slots:
     void positionDisplayWindow();
     void updateScreen();
     void httpServerState(bool &state, QString &httpServerIPAddress, int &httpServerPort, int &webSocketServerPort);
-    void proclaimServerState(bool &state, QString &proclaimIPAddress, int &proclaimHttpPort, int &proclaimWebSocketPort);
 
     void setWaitCursor();
     void setArrowCursor();
@@ -267,10 +264,6 @@ private slots:
 
     void sendBibleVerseToServer();
     void sendSongVerseToServer();
-    bool anyVerseOutputEnabled();
-    void sendBibleImagesToProclaim(Verse verse);
-    void sendSongImagesToProclaim(Stanza stanza);
-    void sendPassiveImagesToProclaim();
     void showSongVerseSplit(bool enabled);
     void sendSongVerseSplit();
     QStringList splitSongVerse(QString verse);
