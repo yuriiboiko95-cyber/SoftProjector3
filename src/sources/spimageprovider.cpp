@@ -18,6 +18,7 @@
 ***************************************************************************/
 
 #include "../headers/spimageprovider.hpp"
+#include <QDebug>
 
 SpImageProvider::SpImageProvider() :
     QQuickImageProvider(QQuickImageProvider::Pixmap)
@@ -26,10 +27,17 @@ SpImageProvider::SpImageProvider() :
 
 QPixmap SpImageProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    return m_pixmap;
+    Q_UNUSED(size);
+    Q_UNUSED(requestedSize);
+    bool found = m_pixmaps.contains(id);
+    QPixmap p = m_pixmaps.value(id);
+    qDebug() << "[SIP diag] requestPixmap(): id=" << id << " found=" << found
+             << " size=" << p.size() << " isNull=" << p.isNull();
+    return p;
 }
 
-void SpImageProvider::setPixMap(QPixmap &p)
+void SpImageProvider::setPixMap(const QString &id, const QPixmap &p)
 {
-    m_pixmap = p;
+    qDebug() << "[SIP diag] setPixMap(): id=" << id << " size=" << p.size() << " isNull=" << p.isNull();
+    m_pixmaps[id] = p;
 }

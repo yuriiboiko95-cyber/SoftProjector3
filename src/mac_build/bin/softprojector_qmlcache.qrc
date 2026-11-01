@@ -106,5 +106,6 @@
     </qresource>
     <qresource prefix="/html">
         <file alias="html/httpserver.html">../../html/httpserver.html</file>
+        <file alias="html/proclaimdisplay.html">../../html/proclaimdisplay.html</file>
     </qresource>
 </RCC>

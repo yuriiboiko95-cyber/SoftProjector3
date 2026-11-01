@@ -76,6 +76,9 @@ SoftProjector::SoftProjector(QWidget *parent)
     if (mySettings.general.proclaimServerEnabled) {
         proclaimWebSocketServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.proclaimWebSocketPort);
         proclaimHttpServer->startServer(mySettings.general.httpServerIPAddress, mySettings.general.proclaimHttpPort, mySettings.general.proclaimWebSocketPort);
+        // Push the passive background immediately so a client connecting
+        // before any verse is shown doesn't just see a black screen.
+        sendPassiveImagesToProclaim();
     }
 
     ui->setupUi(this);
@@ -99,6 +102,11 @@ SoftProjector::SoftProjector(QWidget *parent)
 
     showing = false;
     displayClosed = false;
+    new_list = false;
+    isSingleScreen = true;
+    hasDisplayScreen2 = false;
+    hasDisplayScreen3 = false;
+    hasDisplayScreen4 = false;
 
     ui->projectTab->clear();
     ui->projectTab->addTab(bibleWidget,QIcon(":/icons/icons/book.png"), tr("Bible (F6)"));
@@ -126,6 +134,7 @@ SoftProjector::SoftProjector(QWidget *parent)
     connect(manageDialog, SIGNAL(setMainWaitCursor()), this, SLOT(setWaitCursor()));
     connect(languageGroup, SIGNAL(triggered(QAction*)), this, SLOT(switchLanguage(QAction*)));
     connect(pds1,SIGNAL(exitSlide()),this,SLOT(on_actionHide_triggered()));
+    connect(pds1,SIGNAL(clearSlide()),this,SLOT(on_actionClear_triggered()));
     connect(pds1,SIGNAL(nextSlide()),this,SLOT(nextSlide()));
     connect(pds1,SIGNAL(prevSlide()),this,SLOT(prevSlide()));
     connect(settingsDialog,SIGNAL(updateSettings(GeneralSettings&,Theme&,SlideShowSettings&,
@@ -397,9 +406,12 @@ void SoftProjector::showDisplayScreen(bool show)
     }
     else
     {
+        // Do not render here - this function is called from
+        // updateScreen()'s passive branch right after it already renders
+        // theme.passive's actual background; a second, blank/color render
+        // here was overwriting that with a plain fill, which is exactly
+        // the black-screen-on-Esc bug.
         pds1->hide();
-        QPixmap p;
-        pds1->renderPassiveText(p,false);
         ui->actionCloseDisplay->setEnabled(false);
     }
 
@@ -530,9 +542,13 @@ void SoftProjector::proclaimServerState(bool &state, QString &proclaimIPAddress,
         proclaimWebSocketServer->startServer(proclaimIPAddress, proclaimWebSocketPort);
         proclaimHttpServer->startServer(proclaimIPAddress, proclaimHttpPort, proclaimWebSocketPort);
 
-        // If we are already showing a bible verse live, immediately send it to newly connected clients.
+        // Immediately send current state to newly connected clients, so they
+        // never just see a black screen: the live verse if one is showing,
+        // otherwise the passive background.
         if (showing && pType == BIBLE) {
             sendBibleVerseToServer();
+        } else {
+            sendPassiveImagesToProclaim();
         }
     }
 }
@@ -735,6 +751,7 @@ void SoftProjector::setChapterList(QStringList chapter_list, QString caption, QI
     ui->widgetMultiVerse->setVisible(true);
     mediaControls->setVisible(false);
     showing = true;
+    new_list = false;
     ui->labelIcon->setPixmap(QPixmap(":/icons/icons/book.png").scaled(16,16,Qt::IgnoreAspectRatio,Qt::SmoothTransformation));
     ui->labelShow->setText(caption);
     ui->labelSongNotes->setVisible(false);
@@ -931,6 +948,12 @@ void SoftProjector::updateScreen()
     // the display
     int currentRow = ui->listShow->currentRow();
 
+    qDebug() << "[SP diag] updateScreen(): showing=" << showing << " pType=" << pType
+             << " currentRow=" << currentRow << " isSingleScreen=" << isSingleScreen
+             << " passive.useBackground=" << theme.passive.useBackground
+             << " passive.backgroundPix.isNull=" << theme.passive.backgroundPix.isNull()
+             << " passive.backgroundPix.size=" << theme.passive.backgroundPix.size();
+
     if(!showing)
     {
         // Do not display any text:
@@ -977,6 +1000,10 @@ void SoftProjector::updateScreen()
             }
 
         }
+
+        if (mySettings.general.proclaimServerEnabled)
+            sendPassiveImagesToProclaim();
+
            stopVideo();
         ui->actionShow->setEnabled(true);
         ui->actionHide->setEnabled(false);
@@ -984,16 +1011,19 @@ void SoftProjector::updateScreen()
     }
     else if ((currentRow >=0 || pType == VIDEO)  && !new_list)
     {
-        if(isSingleScreen)
+        if (!mySettings.general.disableScreens)
         {
-            if(pds1->isHidden())
-                showDisplayScreen(true);
-        }
-        else
-        {
-            if(pds1->isHidden() || !ui->actionCloseDisplay->isChecked())
+            if(isSingleScreen)
             {
-                ui->actionCloseDisplay->trigger();
+                if(pds1->isHidden())
+                    showDisplayScreen(true);
+            }
+            else
+            {
+                if(pds1->isHidden() || !ui->actionCloseDisplay->isChecked())
+                {
+                    ui->actionCloseDisplay->trigger();
+                }
             }
         }
 
@@ -1032,6 +1062,27 @@ void SoftProjector::updateScreen()
         default:
             // ERROR Unown type to show.
             break;
+        }
+
+        if (mySettings.general.proclaimServerEnabled) {
+            if (pType == BIBLE) {
+                int srows(ui->listShow->count());
+                QList<int> currentRows;
+                for(int i(0); i<srows; ++i)
+                {
+                    if(ui->listShow->item(i)->isSelected())
+                        currentRows.append(i);
+                }
+                if (currentRows.isEmpty() && currentRow >= 0)
+                    currentRows.append(currentRow);
+                sendBibleImagesToProclaim(bibleWidget->bible.getCurrentVerseAndCaption(
+                                              currentRows,theme.bible,mySettings.bibleSets));
+            } else if (pType == SONG) {
+                sendSongImagesToProclaim(current_song.getStanza(currentRow));
+            } else {
+                // Proclaim only handles Bible/Song content - show passive for anything else live.
+                sendPassiveImagesToProclaim();
+            }
         }
     }
 }
@@ -1264,6 +1315,17 @@ void SoftProjector::on_actionShow_triggered()
 
 void SoftProjector::on_actionHide_triggered()
 {
+    // On macOS, actionHide's "Esc" shortcut lives in the app-wide native
+    // menu bar and fires regardless of which window has focus, while
+    // ProjectorDisplayScreen::keyPressEvent() also catches Key_Escape
+    // directly and emits exitSlide() (connected to this same slot). A
+    // single physical Esc press can therefore call this slot twice in a
+    // row, causing renderPassiveText() to run twice and the second run's
+    // ping-pong buffer swap to land on the not-yet-visible image layer -
+    // this guard makes the redundant call a no-op.
+    if (!showing)
+        return;
+
     showing = false;
     if (anyVerseOutputEnabled())
     {
@@ -1281,23 +1343,51 @@ void SoftProjector::on_actionHide_triggered()
 
 void SoftProjector::on_actionClear_triggered()
 {
-    pds1->renderNotText();
+    // Show the passive background (matching what Esc/Hide does) rather than
+    // just clearing text and leaving whatever background happened to be
+    // showing - Clear should return to the same idle state Hide does. That
+    // means updating showing/pType-dependent state the same way Hide does,
+    // too - not just the on-screen pixels: without this, showing stayed
+    // true and any later unconditional updateScreen() call (e.g. Settings'
+    // Apply/OK, which always emits one) would re-evaluate the stale
+    // "currently showing" state and bring the old Bible/Song content back.
+    showing = false;
+    ui->actionHide->setEnabled(false);
+
+    pds1->renderPassiveText(theme.passive.backgroundPix,theme.passive.useBackground);
     if(hasDisplayScreen2)
     {
-        pds2->renderNotText();
+        if(!theme.passive2.useDisp1settings)
+            pds2->renderPassiveText(theme.passive2.backgroundPix,theme.passive2.useBackground);
+        else
+            pds2->renderPassiveText(theme.passive.backgroundPix,theme.passive.useBackground);
     }
     if(hasDisplayScreen3)
     {
-        pds3->renderNotText();
+        if(!theme.passive3.useDisp1settings)
+            pds3->renderPassiveText(theme.passive3.backgroundPix,theme.passive3.useBackground);
+        else
+            pds3->renderPassiveText(theme.passive.backgroundPix,theme.passive.useBackground);
     }
     if(hasDisplayScreen4)
     {
-        pds4->renderNotText();
+        if(!theme.passive4.useDisp1settings)
+            pds4->renderPassiveText(theme.passive4.backgroundPix,theme.passive4.useBackground);
+        else
+            pds4->renderPassiveText(theme.passive.backgroundPix,theme.passive.useBackground);
     }
 
-    if (anyVerseOutputEnabled())
+    // OBS's output is a transparent overlay, so blanking it on Clear is
+    // correct. Proclaim's Web Page item is a full-screen replacement like
+    // the native display, so it should mirror the passive background
+    // here too, rather than going to a blank/black screen.
+    if (mySettings.general.httpServerEnabled && webSocketServer)
     {
-        clearHttpOutput();
+        webSocketServer->setBlank();
+    }
+    if (mySettings.general.proclaimServerEnabled)
+    {
+        sendPassiveImagesToProclaim();
     }
 
     ui->actionClear->setEnabled(false);
@@ -1388,6 +1478,7 @@ void SoftProjector::on_listShow_doubleClicked(QModelIndex index)
             sendSongVerseToServer();
         }
 
+        updateScreen();
         ui->actionShow->setEnabled(false);
         ui->actionHide->setEnabled(true);
         return;
@@ -3038,7 +3129,77 @@ void SoftProjector::sendBibleImagesToProclaim(Verse verse)
     textBuffer.open(QIODevice::WriteOnly);
     textPix.save(&textBuffer, "PNG");
 
-    proclaimWebSocketServer->setBibleImages(backgroundBytes, backgroundMime, textBytes, theme.bible.useFading);
+    proclaimWebSocketServer->setContentImages(backgroundBytes, backgroundMime, textBytes, theme.bible.useFading);
+}
+
+// Renders a song stanza with the same ImageGenerator call the native
+// projector display uses (ProjectorDisplayScreen::renderSongText), mirroring
+// sendBibleImagesToProclaim. Always shows the full stanza, matching what the
+// native display shows - the OBS-only "split verse" lower-thirds mode isn't
+// something the native display (or Proclaim) renders.
+void SoftProjector::sendSongImagesToProclaim(Stanza stanza)
+{
+    SongSettings sSets = theme.song;
+    if (current_song.usePrivateSettings)
+        current_song.getSettings(sSets);
+
+    ImageGenerator proclaimImGen;
+    proclaimImGen.setScreenSize(QSize(1920, 1080));
+
+    QPixmap textPix = proclaimImGen.generateSongImage(stanza, sSets);
+
+    QByteArray backgroundBytes;
+    QString backgroundMime;
+    if (sSets.useBackground) {
+        backgroundBytes = pixToByte(sSets.backgroundPix);
+        backgroundMime = "image/jpeg";
+    } else {
+        QColor transparent(0, 0, 0, 0);
+        QPixmap backgroundPix = proclaimImGen.generateColorImage(transparent);
+        QBuffer buffer(&backgroundBytes);
+        buffer.open(QIODevice::WriteOnly);
+        backgroundPix.save(&buffer, "PNG");
+        backgroundMime = "image/png";
+    }
+
+    QByteArray textBytes;
+    QBuffer textBuffer(&textBytes);
+    textBuffer.open(QIODevice::WriteOnly);
+    textPix.save(&textBuffer, "PNG");
+
+    proclaimWebSocketServer->setContentImages(backgroundBytes, backgroundMime, textBytes, sSets.useFading);
+}
+
+// Pushes the passive (idle) background to Proclaim, with a blank text layer.
+// Used whenever a Bible verse isn't the thing currently live (idle, or
+// showing a song/picture/etc.), so Proclaim shows the same passive
+// background the native display does, instead of a stale verse or blank.
+void SoftProjector::sendPassiveImagesToProclaim()
+{
+    ImageGenerator proclaimImGen;
+    proclaimImGen.setScreenSize(QSize(1920, 1080));
+
+    QByteArray backgroundBytes;
+    QString backgroundMime;
+    if (theme.passive.useBackground) {
+        backgroundBytes = pixToByte(theme.passive.backgroundPix);
+        backgroundMime = "image/jpeg";
+    } else {
+        QColor transparent(0, 0, 0, 0);
+        QPixmap backgroundPix = proclaimImGen.generateColorImage(transparent);
+        QBuffer buffer(&backgroundBytes);
+        buffer.open(QIODevice::WriteOnly);
+        backgroundPix.save(&buffer, "PNG");
+        backgroundMime = "image/png";
+    }
+
+    QPixmap textPix = proclaimImGen.generateEmptyImage();
+    QByteArray textBytes;
+    QBuffer textBuffer(&textBytes);
+    textBuffer.open(QIODevice::WriteOnly);
+    textPix.save(&textBuffer, "PNG");
+
+    proclaimWebSocketServer->setContentImages(backgroundBytes, backgroundMime, textBytes, theme.passive.useFading);
 }
 
 /*

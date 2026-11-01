@@ -710,97 +710,31 @@ void SongSettingWidget::on_toolButtonFont4_clicked()
 
 void SongSettingWidget::on_groupBoxSongAddBKToText_toggled(bool arg1)
 {
-    QColor c(mySettings.songTextGenBKColor);
-    if(arg1)
-    {
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings.useBackground = arg1;
-        mySettings.backgroundName = c.name();
-        mySettings.backgroundPix = px;
-        ui->lineEditSongBackground->setText(c.name());
-        ui->groupBoxSongBackground->setChecked(arg1);
-    }
-    else
-    {
-        mySettings.useBackground = arg1;
-        mySettings.backgroundName = "";
-        mySettings.backgroundPix = QPixmap(1,1);
-        ui->groupBoxSongBackground->setChecked(arg1);
-        ui->lineEditSongBackground->clear();
-    }
+    // This toggle is for the "colored rectangle behind text" feature
+    // (songAddBKColorToText/songTextGenBKColor), which getSettings() already
+    // reads directly from this checkbox's own state. It must not touch
+    // useBackground/backgroundName/backgroundPix or the separate "use a
+    // picture background" checkbox/path field - those belong to a completely
+    // different feature (the full-screen background image), and previously
+    // being clobbered here meant simply opening Settings (which sets this
+    // checkbox to match the saved, usually-off, value) silently wiped out an
+    // already-configured picture background the moment the dialog loaded.
+    Q_UNUSED(arg1);
 }
 
 void SongSettingWidget::on_groupBoxSongAddBKToText2_toggled(bool arg1)
 {
-    QColor c(mySettings2.songTextGenBKColor);
-
-    if(arg1)
-    {
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings2.useBackground = arg1;
-        mySettings2.backgroundName = c.name();
-        mySettings2.backgroundPix = px;
-        ui->lineEditSongBackground2->setText(c.name());
-        ui->groupBoxSongBackground2->setChecked(arg1);
-    }
-    else
-    {
-        mySettings2.useBackground = arg1;
-        mySettings2.backgroundName = "";
-        mySettings2.backgroundPix = QPixmap(1,1);
-        ui->groupBoxSongBackground2->setChecked(arg1);
-        ui->lineEditSongBackground2->clear();
-    }
+    Q_UNUSED(arg1);
 }
 
 void SongSettingWidget::on_groupBoxSongAddBKToText3_toggled(bool arg1)
 {
-    QColor c(mySettings3.songTextGenBKColor);
-
-    if(arg1)
-    {
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings3.useBackground = arg1;
-        mySettings3.backgroundName = c.name();
-        mySettings3.backgroundPix = px;
-        ui->lineEditSongBackground3->setText(c.name());
-        ui->groupBoxSongBackground3->setChecked(arg1);
-    }
-    else
-    {
-        mySettings3.useBackground = arg1;
-        mySettings3.backgroundName = "";
-        mySettings3.backgroundPix = QPixmap(1,1);
-        ui->groupBoxSongBackground3->setChecked(arg1);
-        ui->lineEditSongBackground3->clear();
-    }
+    Q_UNUSED(arg1);
 }
 
 void SongSettingWidget::on_groupBoxSongAddBKToText4_toggled(bool arg1)
 {
-    QColor c(mySettings4.songTextGenBKColor);
-
-    if(arg1)
-    {
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings4.useBackground = arg1;
-        mySettings4.backgroundName = c.name();
-        mySettings4.backgroundPix = px;
-        ui->lineEditSongBackground4->setText(c.name());
-        ui->groupBoxSongBackground4->setChecked(arg1);
-    }
-    else
-    {
-        mySettings4.useBackground = arg1;
-        mySettings4.backgroundName = "";
-        mySettings4.backgroundPix = QPixmap(1,1);
-        ui->groupBoxSongBackground4->setChecked(arg1);
-        ui->lineEditSongBackground4->clear();
-    }
+    Q_UNUSED(arg1);
 }
 
 void SongSettingWidget::on_tBSongAddBKColorText_clicked()
@@ -845,15 +779,13 @@ void SongSettingWidget::on_tBSongAddBKColorText4_clicked()
 
 void SongSettingWidget::on_tBSongChangeGenBKColor_clicked()
 {
+    // Picks the color for the "colored rectangle behind text" feature only -
+    // must not touch backgroundPix/backgroundName/lineEditSongBackground,
+    // which belong to the separate "use a picture background" feature.
     QColor c(QColorDialog::getColor(mySettings.songTextGenBKColor,this));
     if(c.isValid())
     {
         mySettings.songTextGenBKColor = c;
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings.backgroundName = c.name();
-        mySettings.backgroundPix = px;
-        ui->lineEditSongBackground->setText(c.name());
     }
     QPalette p;
     p.setColor(QPalette::Base,mySettings.songTextGenBKColor);
@@ -866,11 +798,6 @@ void SongSettingWidget::on_tBSongChangeGenBKColor2_clicked()
     if(c.isValid())
     {
         mySettings2.songTextGenBKColor = c;
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings2.backgroundName = c.name();
-        mySettings2.backgroundPix = px;
-        ui->lineEditSongBackground2->setText(c.name());
     }
     QPalette p;
     p.setColor(QPalette::Base,mySettings2.songTextGenBKColor);
@@ -883,11 +810,6 @@ void SongSettingWidget::on_tBSongChangeGenBKColor3_clicked()
     if(c.isValid())
     {
         mySettings3.songTextGenBKColor = c;
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings3.backgroundName = c.name();
-        mySettings3.backgroundPix = px;
-        ui->lineEditSongBackground3->setText(c.name());
     }
     QPalette p;
     p.setColor(QPalette::Base,mySettings3.songTextGenBKColor);
@@ -900,11 +822,6 @@ void SongSettingWidget::on_tBSongChangeGenBKColor4_clicked()
     if(c.isValid())
     {
         mySettings4.songTextGenBKColor = c;
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings4.backgroundName = c.name();
-        mySettings4.backgroundPix = px;
-        ui->lineEditSongBackground4->setText(c.name());
     }
     QPalette p;
     p.setColor(QPalette::Base,mySettings4.songTextGenBKColor);

@@ -209,6 +209,10 @@ template <> constexpr inline auto SoftProjector::qt_create_metaobjectdata<qt_met
         "sendBibleImagesToProclaim",
         "Verse",
         "verse",
+        "sendSongImagesToProclaim",
+        "Stanza",
+        "stanza",
+        "sendPassiveImagesToProclaim",
         "showSongVerseSplit",
         "enabled",
         "sendSongVerseSplit",
@@ -545,33 +549,39 @@ template <> constexpr inline auto SoftProjector::qt_create_metaobjectdata<qt_met
         QtMocHelpers::SlotData<void(Verse)>(163, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { 0x80000000 | 164, 165 },
         }}),
+        // Slot 'sendSongImagesToProclaim'
+        QtMocHelpers::SlotData<void(Stanza)>(166, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 167, 168 },
+        }}),
+        // Slot 'sendPassiveImagesToProclaim'
+        QtMocHelpers::SlotData<void()>(169, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'showSongVerseSplit'
-        QtMocHelpers::SlotData<void(bool)>(166, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 167 },
+        QtMocHelpers::SlotData<void(bool)>(170, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 171 },
         }}),
         // Slot 'sendSongVerseSplit'
-        QtMocHelpers::SlotData<void()>(168, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(172, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'splitSongVerse'
-        QtMocHelpers::SlotData<QStringList(QString)>(169, 2, QMC::AccessPrivate, QMetaType::QStringList, {{
+        QtMocHelpers::SlotData<QStringList(QString)>(173, 2, QMC::AccessPrivate, QMetaType::QStringList, {{
             { QMetaType::QString, 165 },
         }}),
         // Slot 'setSongVerseSplitList'
-        QtMocHelpers::SlotData<void(int, QString)>(170, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 171 }, { QMetaType::QString, 172 },
+        QtMocHelpers::SlotData<void(int, QString)>(174, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 175 }, { QMetaType::QString, 176 },
         }}),
         // Slot 'setSongVerseSplitList'
-        QtMocHelpers::SlotData<void(int)>(170, 2, QMC::AccessPrivate | QMC::MethodCloned, QMetaType::Void, {{
-            { QMetaType::Int, 171 },
+        QtMocHelpers::SlotData<void(int)>(174, 2, QMC::AccessPrivate | QMC::MethodCloned, QMetaType::Void, {{
+            { QMetaType::Int, 175 },
         }}),
         // Slot 'on_songVerseSplitListWidget_itemSelectionChanged'
-        QtMocHelpers::SlotData<void()>(173, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(177, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_songVerseSplitListWidget_itemDoubleClicked'
-        QtMocHelpers::SlotData<void(QListWidgetItem *)>(174, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 175, 176 },
+        QtMocHelpers::SlotData<void(QListWidgetItem *)>(178, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 179, 180 },
         }}),
         // Slot 'on_songVerseSplitListWidgetNavigation'
-        QtMocHelpers::SlotData<void(Qt::Key)>(177, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 178, 2 },
+        QtMocHelpers::SlotData<void(Qt::Key)>(181, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 182, 2 },
         }}),
     };
     QtMocHelpers::UintData qt_properties {
@@ -710,15 +720,17 @@ void SoftProjector::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 111: { bool _r = _t->anyVerseOutputEnabled();
             if (_a[0]) *reinterpret_cast<bool*>(_a[0]) = std::move(_r); }  break;
         case 112: _t->sendBibleImagesToProclaim((*reinterpret_cast<std::add_pointer_t<Verse>>(_a[1]))); break;
-        case 113: _t->showSongVerseSplit((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
-        case 114: _t->sendSongVerseSplit(); break;
-        case 115: { QStringList _r = _t->splitSongVerse((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1])));
+        case 113: _t->sendSongImagesToProclaim((*reinterpret_cast<std::add_pointer_t<Stanza>>(_a[1]))); break;
+        case 114: _t->sendPassiveImagesToProclaim(); break;
+        case 115: _t->showSongVerseSplit((*reinterpret_cast<std::add_pointer_t<bool>>(_a[1]))); break;
+        case 116: _t->sendSongVerseSplit(); break;
+        case 117: { QStringList _r = _t->splitSongVerse((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1])));
             if (_a[0]) *reinterpret_cast<QStringList*>(_a[0]) = std::move(_r); }  break;
-        case 116: _t->setSongVerseSplitList((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
-        case 117: _t->setSongVerseSplitList((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
-        case 118: _t->on_songVerseSplitListWidget_itemSelectionChanged(); break;
-        case 119: _t->on_songVerseSplitListWidget_itemDoubleClicked((*reinterpret_cast<std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
-        case 120: _t->on_songVerseSplitListWidgetNavigation((*reinterpret_cast<std::add_pointer_t<Qt::Key>>(_a[1]))); break;
+        case 118: _t->setSongVerseSplitList((*reinterpret_cast<std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast<std::add_pointer_t<QString>>(_a[2]))); break;
+        case 119: _t->setSongVerseSplitList((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 120: _t->on_songVerseSplitListWidget_itemSelectionChanged(); break;
+        case 121: _t->on_songVerseSplitListWidget_itemDoubleClicked((*reinterpret_cast<std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 122: _t->on_songVerseSplitListWidgetNavigation((*reinterpret_cast<std::add_pointer_t<Qt::Key>>(_a[1]))); break;
         default: ;
         }
     }
@@ -762,14 +774,14 @@ int SoftProjector::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 121)
+        if (_id < 123)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 121;
+        _id -= 123;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 121)
+        if (_id < 123)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 121;
+        _id -= 123;
     }
     return _id;
 }

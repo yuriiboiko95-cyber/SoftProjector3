@@ -87,6 +87,7 @@ private slots:
 
 signals:
     void exitSlide();
+    void clearSlide();
     void nextSlide();
     void prevSlide();
 

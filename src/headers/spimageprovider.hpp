@@ -21,6 +21,7 @@
 #define SPIMAGEPROVIDER_HPP
 
 #include <QQuickImageProvider>
+#include <QHash>
 
 class SpImageProvider : public QQuickImageProvider
 {
@@ -29,10 +30,15 @@ public:
     SpImageProvider();
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
 
-    void setPixMap(QPixmap &p);
+    // Keyed by id (e.g. "imB1a"/"imT2b") rather than one shared slot: a single
+    // slot meant every requestPixmap() call ignored its own id and just
+    // returned whatever was most recently set by ANYONE - background or text,
+    // display 1 or display 2 - so one image element could end up showing
+    // another element's content depending on call ordering/timing.
+    void setPixMap(const QString &id, const QPixmap &p);
 
 private:
-    QPixmap m_pixmap;
+    QHash<QString, QPixmap> m_pixmaps;
 };
 
 

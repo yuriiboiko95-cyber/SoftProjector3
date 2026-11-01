@@ -713,10 +713,10 @@
     <string>Hide</string>
    </property>
    <property name="toolTip">
-    <string>Show Passive Screen (Stop displaying to the screen) (Esc)</string>
+    <string>Show Passive Screen (Stop displaying to the screen) (Shift+Esc)</string>
    </property>
    <property name="shortcut">
-    <string>Esc</string>
+    <string>Shift+Esc</string>
    </property>
   </action>
   <action name="actionClear">
@@ -728,10 +728,10 @@
     <string>Clear</string>
    </property>
    <property name="toolTip">
-    <string>Clear Display Text (Shift+Esc)</string>
+    <string>Clear Display Text (Esc)</string>
    </property>
    <property name="shortcut">
-    <string>Shift+Esc</string>
+    <string>Esc</string>
    </property>
   </action>
   <action name="actionCloseDisplay">

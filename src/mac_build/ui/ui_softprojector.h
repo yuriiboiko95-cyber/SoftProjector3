@@ -595,17 +595,17 @@ public:
 #endif // QT_CONFIG(shortcut)
         actionHide->setText(QCoreApplication::translate("SoftProjectorClass", "Hide", nullptr));
 #if QT_CONFIG(tooltip)
-        actionHide->setToolTip(QCoreApplication::translate("SoftProjectorClass", "Show Passive Screen (Stop displaying to the screen) (Esc)", nullptr));
+        actionHide->setToolTip(QCoreApplication::translate("SoftProjectorClass", "Show Passive Screen (Stop displaying to the screen) (Shift+Esc)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(shortcut)
-        actionHide->setShortcut(QCoreApplication::translate("SoftProjectorClass", "Esc", nullptr));
+        actionHide->setShortcut(QCoreApplication::translate("SoftProjectorClass", "Shift+Esc", nullptr));
 #endif // QT_CONFIG(shortcut)
         actionClear->setText(QCoreApplication::translate("SoftProjectorClass", "Clear", nullptr));
 #if QT_CONFIG(tooltip)
-        actionClear->setToolTip(QCoreApplication::translate("SoftProjectorClass", "Clear Display Text (Shift+Esc)", nullptr));
+        actionClear->setToolTip(QCoreApplication::translate("SoftProjectorClass", "Clear Display Text (Esc)", nullptr));
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(shortcut)
-        actionClear->setShortcut(QCoreApplication::translate("SoftProjectorClass", "Shift+Esc", nullptr));
+        actionClear->setShortcut(QCoreApplication::translate("SoftProjectorClass", "Esc", nullptr));
 #endif // QT_CONFIG(shortcut)
         actionCloseDisplay->setText(QCoreApplication::translate("SoftProjectorClass", "On / Off", nullptr));
 #if QT_CONFIG(tooltip)

@@ -50,7 +50,7 @@ public:
     void stopServer();
     void setBibleText(Verse verse);
     void setSongText(QString verse, QString verseTranslation = "", QString splitVerse = "", QString splitVerseTranslation = "", bool isLast = false);
-    void setBibleImages(QByteArray backgroundBytes, QString backgroundMime, QByteArray textBytes, bool useFading);
+    void setContentImages(QByteArray backgroundBytes, QString backgroundMime, QByteArray textBytes, bool useFading);
     void setBlank();
     bool isRunning;
 

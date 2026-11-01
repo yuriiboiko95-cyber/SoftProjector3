@@ -112,7 +112,7 @@ void WebSocketServer::setSongText(QString verse, QString verseTranslation, QStri
     sendToClients();
 }
 
-void WebSocketServer::setBibleImages(QByteArray backgroundBytes, QString backgroundMime, QByteArray textBytes, bool useFading)
+void WebSocketServer::setContentImages(QByteArray backgroundBytes, QString backgroundMime, QByteArray textBytes, bool useFading)
 {
     jsonOutput = QJsonObject();
 

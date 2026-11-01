@@ -269,6 +269,8 @@ private slots:
     void sendSongVerseToServer();
     bool anyVerseOutputEnabled();
     void sendBibleImagesToProclaim(Verse verse);
+    void sendSongImagesToProclaim(Stanza stanza);
+    void sendPassiveImagesToProclaim();
     void showSongVerseSplit(bool enabled);
     void sendSongVerseSplit();
     QStringList splitSongVerse(QString verse);

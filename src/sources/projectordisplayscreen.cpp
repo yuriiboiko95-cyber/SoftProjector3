@@ -63,6 +63,8 @@ ProjectorDisplayScreen::ProjectorDisplayScreen(QWidget *parent) :
 
     backImSwitch1 = backImSwitch2 = textImSwitch1 = textImSwitch2 = false;
     back1to2 = text1to2 = isNewBack = true;
+    tranType = TR_NONE;
+    backType = B_NONE;
     m_color.setRgb(0,0,0,0);// = QColor(QColor::black());
 }
 
@@ -81,11 +83,15 @@ void ProjectorDisplayScreen::setBackPixmap(QPixmap p, int fillMode)
 {
     // fill mode -->>  0 = Strech, 1 = keep aspect, 2 = keep aspect by expanding
 
-    if(back.cacheKey() == p.cacheKey())
-    {
-        isNewBack = false;
-        return;
-    }
+    // No "skip if unchanged" shortcut here (unlike a former version that
+    // compared cacheKey()/content) - imProvider is a single shared pixmap
+    // slot used for both the background AND text images, and the QML Image
+    // elements are cache:false, so they can re-fetch from the provider on
+    // any repaint, not only when .source changes. Skipping this update
+    // leaves the provider's slot however setTextPixmap() last left it,
+    // which can make a background Image element pull the wrong (text)
+    // content out of that shared slot. Always refreshing here, every call,
+    // avoids that entirely - setTextPixmap() already works this way.
     back = p;
     isNewBack = true;
 
@@ -105,7 +111,6 @@ void ProjectorDisplayScreen::setBackPixmap(QPixmap p, int fillMode)
         break;
     }
 
-    imProvider->setPixMap(p);
     back1to2 = (!back1to2);
 
     QObject *root = dispView->rootObject();
@@ -119,10 +124,9 @@ void ProjectorDisplayScreen::setBackPixmap(QPixmap p, int fillMode)
         if(back1to2)
         {
             backImSwitch2 = (!backImSwitch2);
-            if(backImSwitch2)
-                item2->setProperty("source","image://improvider/imB2a");
-            else
-                item2->setProperty("source","image://improvider/imB2b");
+            QString id = backImSwitch2 ? "imB2a" : "imB2b";
+            imProvider->setPixMap(id, p);
+            item2->setProperty("source","image://improvider/" + id);
 
             if(p.height()<imGen.height())
                 item2->setProperty("y",(imGen.height()-p.height())/2);
@@ -136,10 +140,10 @@ void ProjectorDisplayScreen::setBackPixmap(QPixmap p, int fillMode)
         else
         {
             backImSwitch1 = (!backImSwitch1);
-            if(backImSwitch1)
-                item1->setProperty("source","image://improvider/imB1a");
-            else
-                item1->setProperty("source","image://improvider/imB1b");
+            QString id = backImSwitch1 ? "imB1a" : "imB1b";
+            imProvider->setPixMap(id, p);
+            item1->setProperty("source","image://improvider/" + id);
+
             if(p.height()<imGen.height())
                 item1->setProperty("y",(imGen.height()-p.height())/2);
             else
@@ -164,7 +168,6 @@ void ProjectorDisplayScreen::setBackPixmap(QPixmap p, QColor c)
 
 void ProjectorDisplayScreen::setTextPixmap(QPixmap p)
 {
-    imProvider->setPixMap(p);
     text1to2 = (!text1to2);
 
     QObject *root = dispView->rootObject();
@@ -178,18 +181,16 @@ void ProjectorDisplayScreen::setTextPixmap(QPixmap p)
         if(text1to2)
         {
             textImSwitch2 = (!textImSwitch2);
-            if(textImSwitch2)
-                item2->setProperty("source","image://improvider/imT2a");
-            else
-                item2->setProperty("source","image://improvider/imT2b");
+            QString id = textImSwitch2 ? "imT2a" : "imT2b";
+            imProvider->setPixMap(id, p);
+            item2->setProperty("source","image://improvider/" + id);
         }
         else
         {
             textImSwitch1 = (!textImSwitch1);
-            if(textImSwitch1)
-                item1->setProperty("source","image://improvider/imT1a");
-            else
-                item1->setProperty("source","image://improvider/imT1b");
+            QString id = textImSwitch1 ? "imT1a" : "imT1b";
+            imProvider->setPixMap(id, p);
+            item1->setProperty("source","image://improvider/" + id);
         }
     }
 }
@@ -227,6 +228,9 @@ void ProjectorDisplayScreen::updateScreen()
     QObject *root = dispView->rootObject();
     if (!root)
         return;
+
+    qDebug() << "[PDS diag] updateScreen(): tranType=" << tranType << " isNewBack=" << isNewBack
+             << " back1to2=" << back1to2 << " text1to2=" << text1to2;
 
     QMetaObject::invokeMethod(root,"stopTransitions");
     //    QString tranType = "seq";
@@ -322,7 +326,15 @@ void ProjectorDisplayScreen::keyReleaseEvent(QKeyEvent *event)
     else if(key == Qt::Key_Return)
         emit nextSlide();
     else if(key == Qt::Key_Escape)
-        emit exitSlide();
+    {
+        // Esc clears to the passive background (matches actionClear's "Esc"
+        // shortcut); Shift+Esc stops/hides the display (matches actionHide's
+        // "Shift+Esc" shortcut) - keep this in sync with softprojector.ui.
+        if(event->modifiers() & Qt::ShiftModifier)
+            emit exitSlide();
+        else
+            emit clearSlide();
+    }
     else
         QWidget::keyReleaseEvent(event);
 }
@@ -335,6 +347,13 @@ void ProjectorDisplayScreen::renderNotText()
 
 void ProjectorDisplayScreen::renderPassiveText(QPixmap &back, bool useBack)
 {
+    // Unlike renderBibleText/renderSongText, this never set tranType - so it
+    // was left stuck at whatever the last Bible/Song render set it to (fade
+    // or none), instead of a well-defined value of its own. Passive is an
+    // idle background swap; an instant set is simpler and more robust than
+    // going through the fade-animation path.
+    tranType = TR_NONE;
+
     setTextPixmap(imGen.generateEmptyImage());
     if(useBack)
     {

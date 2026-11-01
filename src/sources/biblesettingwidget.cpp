@@ -1159,97 +1159,42 @@ void BibleSettingWidget::on_toolButtonCaptionFont4_clicked()
 
 void BibleSettingWidget::on_groupBoxAddBackgroundToText_toggled(bool arg1)
 {
-    QColor c(mySettings.bibleTextGenBKColor);
+    // This toggle is for the "colored rectangle behind text" feature
+    // (bibleAddBKColorToText/bibleTextGenBKColor), which getSettings() already
+    // reads directly from this checkbox's own state. It must not touch
+    // useBackground/backgroundName/backgroundPix or the separate "use a
+    // picture background" checkbox/path field - those belong to a completely
+    // different feature (the full-screen background image), and previously
+    // being clobbered here meant simply opening Settings (which sets this
+    // checkbox to match the saved, usually-off, value) silently wiped out an
+    // already-configured picture background the moment the dialog loaded.
     if(arg1)
     {
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings.useBackground = arg1;
-        mySettings.backgroundName = c.name();
-        mySettings.backgroundPix = px;
         ui->comboBoxVerticalAling->setCurrentIndex(2); // Bottom
-        ui->lineEditBackPath->setText(c.name());
-        ui->groupBoxBackground->setChecked(arg1);
-    }
-    else
-    {
-        mySettings.useBackground = arg1;
-        mySettings.backgroundName = "";
-        mySettings.backgroundPix = QPixmap(1,1);
-        ui->groupBoxBackground->setChecked(arg1);
-        ui->lineEditBackPath->clear();
     }
 }
 
 void BibleSettingWidget::on_groupBoxAddBackgroundToText2_toggled(bool arg1)
 {
-    QColor c(mySettings2.bibleTextGenBKColor);
     if(arg1)
     {
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings2.useBackground = arg1;
-        mySettings2.backgroundName = c.name();
-        mySettings2.backgroundPix = px;
         ui->comboBoxVerticalAling2->setCurrentIndex(2); // Bottom
-        ui->lineEditBackPath2->setText(c.name());
-        ui->groupBoxBackground2->setChecked(arg1);
-    }
-    else
-    {
-        mySettings2.useBackground = arg1;
-        mySettings2.backgroundName = "";
-        mySettings2.backgroundPix = QPixmap(1,1);
-        ui->groupBoxBackground2->setChecked(arg1);
-        ui->lineEditBackPath2->clear();
     }
 }
 
 void BibleSettingWidget::on_groupBoxAddBackgroundToText3_toggled(bool arg1)
 {
-    QColor c(mySettings3.bibleTextGenBKColor);
     if(arg1)
     {
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings3.useBackground = arg1;
-        mySettings3.backgroundName = c.name();
-        mySettings3.backgroundPix = px;
         ui->comboBoxVerticalAling3->setCurrentIndex(2); // Bottom
-        ui->lineEditBackPath3->setText(c.name());
-        ui->groupBoxBackground3->setChecked(arg1);
-    }
-    else
-    {
-        mySettings3.useBackground = arg1;
-        mySettings3.backgroundName = "";
-        mySettings3.backgroundPix = QPixmap(1,1);
-        ui->groupBoxBackground3->setChecked(arg1);
-        ui->lineEditBackPath3->clear();
     }
 }
 
 void BibleSettingWidget::on_groupBoxAddBackgroundToText4_toggled(bool arg1)
 {
-    QColor c(mySettings4.bibleTextGenBKColor);
     if(arg1)
     {
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings4.useBackground = arg1;
-        mySettings4.backgroundName = c.name();
-        mySettings4.backgroundPix = px;
         ui->comboBoxVerticalAling4->setCurrentIndex(2); // Bottom
-        ui->lineEditBackPath4->setText(c.name());
-        ui->groupBoxBackground4->setChecked(arg1);
-    }
-    else
-    {
-        mySettings4.useBackground = arg1;
-        mySettings4.backgroundName = "";
-        mySettings4.backgroundPix = QPixmap(1,1);
-        ui->groupBoxBackground4->setChecked(arg1);
-        ui->lineEditBackPath4->clear();
     }
 }
 
@@ -1295,15 +1240,13 @@ void BibleSettingWidget::on_toolButtonAddBKColorText4_clicked()
 
 void BibleSettingWidget::on_toolButtonChangeGenBKColor_clicked()
 {
+    // Picks the color for the "colored rectangle behind text" feature only -
+    // must not touch backgroundPix/backgroundName/lineEditBackPath, which
+    // belong to the separate "use a picture background" feature.
     QColor c(QColorDialog::getColor(mySettings.bibleTextGenBKColor,this));
     if(c.isValid())
     {
         mySettings.bibleTextGenBKColor = c;
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings.backgroundPix = px;
-        mySettings.backgroundName = c.name();
-        ui->lineEditBackPath->setText(c.name());
     }
     QPalette p;
     p.setColor(QPalette::Base,mySettings.bibleTextGenBKColor);
@@ -1316,15 +1259,10 @@ void BibleSettingWidget::on_toolButtonChangeGenBKColor2_clicked()
     if(c.isValid())
     {
         mySettings2.bibleTextGenBKColor = c;
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings2.backgroundPix = px;
-        mySettings2.backgroundName = c.name();
-        ui->lineEditBackPath2->setText(c.name());
     }
     QPalette p;
     p.setColor(QPalette::Base,mySettings2.bibleTextGenBKColor);
-    ui->graphicViewChangeGenBKColor2->setPalette(p);    
+    ui->graphicViewChangeGenBKColor2->setPalette(p);
 }
 
 void BibleSettingWidget::on_toolButtonChangeGenBKColor3_clicked()
@@ -1333,11 +1271,6 @@ void BibleSettingWidget::on_toolButtonChangeGenBKColor3_clicked()
     if(c.isValid())
     {
         mySettings3.bibleTextGenBKColor = c;
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings3.backgroundPix = px;
-        mySettings3.backgroundName = c.name();
-        ui->lineEditBackPath3->setText(c.name());
     }
     QPalette p;
     p.setColor(QPalette::Base,mySettings3.bibleTextGenBKColor);
@@ -1350,11 +1283,6 @@ void BibleSettingWidget::on_toolButtonChangeGenBKColor4_clicked()
     if(c.isValid())
     {
         mySettings4.bibleTextGenBKColor = c;
-        QPixmap px(1920, 1080);
-        px.fill(c);
-        mySettings4.backgroundPix = px;
-        mySettings4.backgroundName = c.name();
-        ui->lineEditBackPath4->setText(c.name());
     }
     QPalette p;
     p.setColor(QPalette::Base,mySettings4.bibleTextGenBKColor);

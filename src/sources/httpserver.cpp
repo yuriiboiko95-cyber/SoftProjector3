@@ -67,6 +67,14 @@ void HttpServer::sendData()
 {
     QTcpSocket* socket = (QTcpSocket*)sender();
 
+    // A single HTTP request can arrive across multiple TCP reads, each
+    // re-triggering readyRead(). Disconnect immediately so only the first
+    // firing sends a response - otherwise the file gets written multiple
+    // times onto the same connection, and since there's no Content-Length
+    // header the browser just concatenates everything it receives as one
+    // body until the socket closes.
+    disconnect(socket, SIGNAL(readyRead()), this, SLOT(sendData()));
+
     QFile file(htmlResourcePath);
     if(!file.open(QFile::ReadOnly |
                   QFile::Text))
