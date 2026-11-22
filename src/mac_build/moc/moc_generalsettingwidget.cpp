@@ -61,6 +61,7 @@ template <> constexpr inline auto GeneralSettingWidget::qt_create_metaobjectdata
         "on_comboBoxDisplayScreen_2_activated",
         "on_comboBoxDisplayScreen_3_activated",
         "on_comboBoxDisplayScreen_4_activated",
+        "on_pushButtonIdentifyScreens_clicked",
         "on_pushButtonAddTheme_clicked",
         "on_comboBoxTheme_activated",
         "on_checkBoxUseDarkTheme_clicked"
@@ -113,14 +114,16 @@ template <> constexpr inline auto GeneralSettingWidget::qt_create_metaobjectdata
         QtMocHelpers::SlotData<void(int)>(20, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { QMetaType::Int, 17 },
         }}),
-        // Slot 'on_pushButtonAddTheme_clicked'
+        // Slot 'on_pushButtonIdentifyScreens_clicked'
         QtMocHelpers::SlotData<void()>(21, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_pushButtonAddTheme_clicked'
+        QtMocHelpers::SlotData<void()>(22, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_comboBoxTheme_activated'
-        QtMocHelpers::SlotData<void(int)>(22, 2, QMC::AccessPrivate, QMetaType::Void, {{
+        QtMocHelpers::SlotData<void(int)>(23, 2, QMC::AccessPrivate, QMetaType::Void, {{
             { QMetaType::Int, 17 },
         }}),
         // Slot 'on_checkBoxUseDarkTheme_clicked'
-        QtMocHelpers::SlotData<void()>(23, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -159,9 +162,10 @@ void GeneralSettingWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         case 11: _t->on_comboBoxDisplayScreen_2_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
         case 12: _t->on_comboBoxDisplayScreen_3_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
         case 13: _t->on_comboBoxDisplayScreen_4_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
-        case 14: _t->on_pushButtonAddTheme_clicked(); break;
-        case 15: _t->on_comboBoxTheme_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
-        case 16: _t->on_checkBoxUseDarkTheme_clicked(); break;
+        case 14: _t->on_pushButtonIdentifyScreens_clicked(); break;
+        case 15: _t->on_pushButtonAddTheme_clicked(); break;
+        case 16: _t->on_comboBoxTheme_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 17: _t->on_checkBoxUseDarkTheme_clicked(); break;
         default: ;
         }
     }
@@ -196,14 +200,14 @@ int GeneralSettingWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 18;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 17)
+        if (_id < 18)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 17;
+        _id -= 18;
     }
     return _id;
 }

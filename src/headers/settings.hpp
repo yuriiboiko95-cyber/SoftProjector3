@@ -303,6 +303,12 @@ public:
     int displayScreen2; // stores secondary display screen location
     int displayScreen3; // stores Tertiary display screen location
     int displayScreen4; // stores Quaternary display screen location
+    // Name and position of each selected screen, used to find the same screen
+    // again when the operating system reports screens in a different order
+    QString displayScreenKey;
+    QString displayScreenKey2;
+    QString displayScreenKey3;
+    QString displayScreenKey4;
     DisplayControlsSettings displayControls;
     int currentThemeId;
     bool displayOnStartUp;
@@ -366,6 +372,9 @@ public:
     SlideShowSettings slideSets;
 
     bool isSpClosing;
+
+    static QString screenKey(int index);
+    static int findScreen(int index, const QString &key);
 
 public slots:
     void loadSettings();

@@ -18,6 +18,8 @@
 ***************************************************************************/
 
 #include "../headers/settings.hpp"
+#include <QGuiApplication>
+#include <QScreen>
 
 TextSettingsBase::TextSettingsBase()
 {
@@ -783,6 +785,44 @@ Settings::Settings()
     isSpClosing = false;
 }
 
+QString Settings::screenKey(int index)
+{
+    // Returns "name|x,y" for the screen at index, or empty string for "none"
+    QList<QScreen*> screens = QGuiApplication::screens();
+    if(index<0 || index>=screens.count())
+        return QString();
+    QScreen *s = screens.at(index);
+    QString name = s->name();
+    name.remove('=').remove('|').remove('\n');
+    return QString("%1|%2,%3").arg(name).arg(s->geometry().x()).arg(s->geometry().y());
+}
+
+int Settings::findScreen(int index, const QString &key)
+{
+    // Finds the screen that matches a saved key. Prefers same name and position,
+    // then a unique screen with the same name, then falls back to the saved index.
+    QList<QScreen*> screens = QGuiApplication::screens();
+    if(index<0 || key.isEmpty())
+        return (index<screens.count()) ? index : -1;
+
+    QString name = key.section('|',0,0);
+    int nameMatch = -1;
+    int nameMatchCount = 0;
+    for(int i(0);i<screens.count();++i)
+    {
+        if(screenKey(i)==key)
+            return i;
+        if(screenKey(i).section('|',0,0)==name)
+        {
+            nameMatch = i;
+            ++nameMatchCount;
+        }
+    }
+    if(nameMatchCount==1)
+        return nameMatch;
+    return (index<screens.count()) ? index : -1;
+}
+
 void Settings::loadSettings()
 {
     QString t,n,v,s,sets; // type, name, value, userValues
@@ -822,6 +862,14 @@ void Settings::loadSettings()
                     general.displayScreen3 = v.toInt();
                 else if (n == "displayScreen4")
                     general.displayScreen4 = v.toInt();
+                else if (n == "displayScreenKey")
+                    general.displayScreenKey = v;
+                else if (n == "displayScreenKey2")
+                    general.displayScreenKey2 = v;
+                else if (n == "displayScreenKey3")
+                    general.displayScreenKey3 = v;
+                else if (n == "displayScreenKey4")
+                    general.displayScreenKey4 = v;
                 else if (n == "dcIconSize")
                     general.displayControls.buttonSize = v.toInt();
                 else if (n == "dcAlignment")
@@ -845,6 +893,14 @@ void Settings::loadSettings()
                 else if (n == "disableScreens")
                     general.disableScreens = (v=="true");
             }
+
+            // Screen order can change between restarts, so look up the saved screens again
+            general.displayScreen = findScreen(general.displayScreen,general.displayScreenKey);
+            if(general.displayScreen<0)
+                general.displayScreen = 0;
+            general.displayScreen2 = findScreen(general.displayScreen2,general.displayScreenKey2);
+            general.displayScreen3 = findScreen(general.displayScreen3,general.displayScreenKey3);
+            general.displayScreen4 = findScreen(general.displayScreen4,general.displayScreenKey4);
         }
         else if(t == "spMain")
         {
@@ -993,6 +1049,10 @@ void Settings::saveSettings()
     gset += "\ndisplayScreen2 = " + QString::number(general.displayScreen2);
     gset += "\ndisplayScreen3 = " + QString::number(general.displayScreen3);
     gset += "\ndisplayScreen4 = " + QString::number(general.displayScreen4);
+    gset += "\ndisplayScreenKey = " + general.displayScreenKey;
+    gset += "\ndisplayScreenKey2 = " + general.displayScreenKey2;
+    gset += "\ndisplayScreenKey3 = " + general.displayScreenKey3;
+    gset += "\ndisplayScreenKey4 = " + general.displayScreenKey4;
     gset += "\ndcIconSize = " + QString::number(general.displayControls.buttonSize);
     gset += QString("\ndcAlignment = %1,%2").arg(general.displayControls.alignmentV).arg(general.displayControls.alignmentH);
     gset += "\ndcOpacity = " + QString::number(general.displayControls.opacity);

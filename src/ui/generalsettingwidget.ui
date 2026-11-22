@@ -116,17 +116,14 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QPushButton" name="pushButtonIdentifyScreens">
+        <property name="toolTip">
+         <string>Show each screen's number on that screen</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>162</width>
-          <height>20</height>
-         </size>
+        <property name="text">
+         <string>Identify Screens</string>
         </property>
-       </spacer>
+       </widget>
       </item>
       <item row="2" column="2">
        <spacer name="horizontalSpacer_5">

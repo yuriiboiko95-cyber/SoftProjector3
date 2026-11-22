@@ -44,7 +44,7 @@ public:
     QComboBox *comboBoxDisplayScreen_2;
     QComboBox *comboBoxDisplayScreen;
     QLabel *label_displayScreen_2;
-    QSpacerItem *horizontalSpacer_2;
+    QPushButton *pushButtonIdentifyScreens;
     QSpacerItem *horizontalSpacer_5;
     QLabel *label_displayScreen;
     QComboBox *comboBoxDisplayScreen_3;
@@ -163,9 +163,10 @@ public:
 
         gridLayout->addWidget(label_displayScreen_2, 1, 0, 1, 1);
 
-        horizontalSpacer_2 = new QSpacerItem(162, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
+        pushButtonIdentifyScreens = new QPushButton(groupBoxDisplayScreen);
+        pushButtonIdentifyScreens->setObjectName("pushButtonIdentifyScreens");
 
-        gridLayout->addItem(horizontalSpacer_2, 0, 2, 1, 1);
+        gridLayout->addWidget(pushButtonIdentifyScreens, 0, 2, 1, 1);
 
         horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
@@ -443,6 +444,10 @@ public:
         comboBoxDisplayScreen->setToolTip(QCoreApplication::translate("GeneralSettingWidget", "Select onto which screen to display", nullptr));
 #endif // QT_CONFIG(tooltip)
         label_displayScreen_2->setText(QCoreApplication::translate("GeneralSettingWidget", "Secondary Display Screen:", nullptr));
+#if QT_CONFIG(tooltip)
+        pushButtonIdentifyScreens->setToolTip(QCoreApplication::translate("GeneralSettingWidget", "Show each screen's number on that screen", nullptr));
+#endif // QT_CONFIG(tooltip)
+        pushButtonIdentifyScreens->setText(QCoreApplication::translate("GeneralSettingWidget", "Identify Screens", nullptr));
         label_displayScreen->setText(QCoreApplication::translate("GeneralSettingWidget", "Primary Display Screen:", nullptr));
 #if QT_CONFIG(tooltip)
         comboBoxDisplayScreen_3->setToolTip(QCoreApplication::translate("GeneralSettingWidget", "Select onto which screen to display", nullptr));

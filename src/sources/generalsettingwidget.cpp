@@ -73,7 +73,12 @@ void GeneralSettingWidget::loadSettings()
     ui->comboBoxDisplayScreen->clear();
     for(QScreen * s: QApplication::screens())
     {
-        monitors << QString("%1 - %2x%3").arg(i).arg(s->geometry().width()).arg(s->geometry().height());
+        QString label = QString("%1 - %2 - %3x%4 at (%5, %6)").arg(i).arg(s->name())
+                .arg(s->geometry().width()).arg(s->geometry().height())
+                .arg(s->geometry().x()).arg(s->geometry().y());
+        if(s==QGuiApplication::primaryScreen())
+            label += tr(" [main]");
+        monitors << label;
         ++i;
     }
 
@@ -198,6 +203,10 @@ GeneralSettings GeneralSettingWidget::getSettings()
     mySettings.displayScreen2 = monitors.indexOf(ui->comboBoxDisplayScreen_2->currentText());    
     mySettings.displayScreen3 = monitors.indexOf(ui->comboBoxDisplayScreen_3->currentText());
     mySettings.displayScreen4 = monitors.indexOf(ui->comboBoxDisplayScreen_4->currentText());
+    mySettings.displayScreenKey = Settings::screenKey(mySettings.displayScreen);
+    mySettings.displayScreenKey2 = Settings::screenKey(mySettings.displayScreen2);
+    mySettings.displayScreenKey3 = Settings::screenKey(mySettings.displayScreen3);
+    mySettings.displayScreenKey4 = Settings::screenKey(mySettings.displayScreen4);
 
     mySettings.displayControls.buttonSize = ui->comboBoxIconSize->currentIndex();
     mySettings.displayControls.alignmentV = ui->comboBoxControlsAlignV->currentIndex();
@@ -377,4 +386,27 @@ void GeneralSettingWidget::on_checkBoxUseDarkTheme_clicked()
     QMessageBox msgBox;
     msgBox.setText("Re-launch the application for the changes to take place.");
     msgBox.exec();
+}
+
+void GeneralSettingWidget::on_pushButtonIdentifyScreens_clicked()
+{
+    // Show the screen number in large text on every screen for a few seconds
+    QList<QScreen*> screens = QGuiApplication::screens();
+    for(int i(0);i<screens.count();++i)
+    {
+        QScreen *s = screens.at(i);
+        QLabel *l = new QLabel(QString("%1\n%2").arg(i+1).arg(s->name()));
+        l->setAttribute(Qt::WA_DeleteOnClose);
+        l->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+        l->setAlignment(Qt::AlignCenter);
+        l->setStyleSheet("QLabel { background-color: black; color: white; border: 6px solid white; }");
+        QFont f = l->font();
+        f.setPointSize(s->geometry().height()/12);
+        f.setBold(true);
+        l->setFont(f);
+        QRect g = s->geometry();
+        l->setGeometry(g.x()+g.width()/4, g.y()+g.height()/4, g.width()/2, g.height()/2);
+        l->show();
+        QTimer::singleShot(4000, l, &QLabel::close);
+    }
 }

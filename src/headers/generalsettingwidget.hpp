@@ -64,6 +64,7 @@ private slots:
     void on_comboBoxDisplayScreen_2_activated(int index);
     void on_comboBoxDisplayScreen_3_activated(int index);
     void on_comboBoxDisplayScreen_4_activated(int index);
+    void on_pushButtonIdentifyScreens_clicked();
     void on_pushButtonAddTheme_clicked();
     void on_comboBoxTheme_activated(int index);
     void on_checkBoxUseDarkTheme_clicked();
