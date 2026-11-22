@@ -80,7 +80,7 @@ template <> constexpr inline auto BibleSettingWidget::qt_create_metaobjectdata<q
         "updateTrinaryBibleMenu4",
         "updateOperatorBibleMenu",
         "on_comboBoxPrimaryBible_activated",
-        "arg1",
+        "index",
         "on_comboBoxPrimaryBible2_activated",
         "on_comboBoxPrimaryBible3_activated",
         "on_comboBoxPrimaryBible4_activated",
@@ -93,6 +93,7 @@ template <> constexpr inline auto BibleSettingWidget::qt_create_metaobjectdata<q
         "on_buttonBrowseBackground3_clicked",
         "on_buttonBrowseBackground4_clicked",
         "on_checkBoxUseShadow_stateChanged",
+        "arg1",
         "on_checkBoxUseShadow2_stateChanged",
         "on_checkBoxUseShadow3_stateChanged",
         "on_checkBoxUseShadow4_stateChanged",
@@ -194,36 +195,36 @@ template <> constexpr inline auto BibleSettingWidget::qt_create_metaobjectdata<q
         // Slot 'updateOperatorBibleMenu'
         QtMocHelpers::SlotData<void()>(38, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_comboBoxPrimaryBible_activated'
-        QtMocHelpers::SlotData<void(const QString &)>(39, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 40 },
+        QtMocHelpers::SlotData<void(int)>(39, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 40 },
         }}),
         // Slot 'on_comboBoxPrimaryBible2_activated'
-        QtMocHelpers::SlotData<void(const QString &)>(41, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 40 },
+        QtMocHelpers::SlotData<void(int)>(41, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 40 },
         }}),
         // Slot 'on_comboBoxPrimaryBible3_activated'
-        QtMocHelpers::SlotData<void(const QString &)>(42, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 40 },
+        QtMocHelpers::SlotData<void(int)>(42, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 40 },
         }}),
         // Slot 'on_comboBoxPrimaryBible4_activated'
-        QtMocHelpers::SlotData<void(const QString &)>(43, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 40 },
+        QtMocHelpers::SlotData<void(int)>(43, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 40 },
         }}),
         // Slot 'on_comboBoxSecondaryBible_activated'
-        QtMocHelpers::SlotData<void(const QString &)>(44, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 40 },
+        QtMocHelpers::SlotData<void(int)>(44, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 40 },
         }}),
         // Slot 'on_comboBoxSecondaryBible2_activated'
-        QtMocHelpers::SlotData<void(const QString &)>(45, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 40 },
+        QtMocHelpers::SlotData<void(int)>(45, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 40 },
         }}),
         // Slot 'on_comboBoxSecondaryBible3_activated'
-        QtMocHelpers::SlotData<void(const QString &)>(46, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 40 },
+        QtMocHelpers::SlotData<void(int)>(46, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 40 },
         }}),
         // Slot 'on_comboBoxSecondaryBible4_activated'
-        QtMocHelpers::SlotData<void(const QString &)>(47, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 40 },
+        QtMocHelpers::SlotData<void(int)>(47, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 40 },
         }}),
         // Slot 'on_buttonBrowseBackground_clicked'
         QtMocHelpers::SlotData<void()>(48, 2, QMC::AccessPrivate, QMetaType::Void),
@@ -235,104 +236,104 @@ template <> constexpr inline auto BibleSettingWidget::qt_create_metaobjectdata<q
         QtMocHelpers::SlotData<void()>(51, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_checkBoxUseShadow_stateChanged'
         QtMocHelpers::SlotData<void(int)>(52, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 40 },
+            { QMetaType::Int, 53 },
         }}),
         // Slot 'on_checkBoxUseShadow2_stateChanged'
-        QtMocHelpers::SlotData<void(int)>(53, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 40 },
+        QtMocHelpers::SlotData<void(int)>(54, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 53 },
         }}),
         // Slot 'on_checkBoxUseShadow3_stateChanged'
-        QtMocHelpers::SlotData<void(int)>(54, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 40 },
+        QtMocHelpers::SlotData<void(int)>(55, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 53 },
         }}),
         // Slot 'on_checkBoxUseShadow4_stateChanged'
-        QtMocHelpers::SlotData<void(int)>(55, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 40 },
+        QtMocHelpers::SlotData<void(int)>(56, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 53 },
         }}),
         // Slot 'on_toolButtonTextColor_clicked'
-        QtMocHelpers::SlotData<void()>(56, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonTextColor2_clicked'
         QtMocHelpers::SlotData<void()>(57, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonTextColor3_clicked'
+        // Slot 'on_toolButtonTextColor2_clicked'
         QtMocHelpers::SlotData<void()>(58, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonTextColor4_clicked'
+        // Slot 'on_toolButtonTextColor3_clicked'
         QtMocHelpers::SlotData<void()>(59, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonTextFont_clicked'
+        // Slot 'on_toolButtonTextColor4_clicked'
         QtMocHelpers::SlotData<void()>(60, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonTextFont2_clicked'
+        // Slot 'on_toolButtonTextFont_clicked'
         QtMocHelpers::SlotData<void()>(61, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonTextFont3_clicked'
+        // Slot 'on_toolButtonTextFont2_clicked'
         QtMocHelpers::SlotData<void()>(62, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonTextFont4_clicked'
+        // Slot 'on_toolButtonTextFont3_clicked'
         QtMocHelpers::SlotData<void()>(63, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonCaptionColor_clicked'
+        // Slot 'on_toolButtonTextFont4_clicked'
         QtMocHelpers::SlotData<void()>(64, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonCaptionColor2_clicked'
+        // Slot 'on_toolButtonCaptionColor_clicked'
         QtMocHelpers::SlotData<void()>(65, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonCaptionColor3_clicked'
+        // Slot 'on_toolButtonCaptionColor2_clicked'
         QtMocHelpers::SlotData<void()>(66, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonCaptionColor4_clicked'
+        // Slot 'on_toolButtonCaptionColor3_clicked'
         QtMocHelpers::SlotData<void()>(67, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonCaptionFont_clicked'
+        // Slot 'on_toolButtonCaptionColor4_clicked'
         QtMocHelpers::SlotData<void()>(68, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonCaptionFont2_clicked'
+        // Slot 'on_toolButtonCaptionFont_clicked'
         QtMocHelpers::SlotData<void()>(69, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonCaptionFont3_clicked'
+        // Slot 'on_toolButtonCaptionFont2_clicked'
         QtMocHelpers::SlotData<void()>(70, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonCaptionFont4_clicked'
+        // Slot 'on_toolButtonCaptionFont3_clicked'
         QtMocHelpers::SlotData<void()>(71, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_toolButtonCaptionFont4_clicked'
+        QtMocHelpers::SlotData<void()>(72, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_groupBoxAddBackgroundToText_toggled'
-        QtMocHelpers::SlotData<void(bool)>(72, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 40 },
+        QtMocHelpers::SlotData<void(bool)>(73, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 53 },
         }}),
         // Slot 'on_groupBoxAddBackgroundToText2_toggled'
-        QtMocHelpers::SlotData<void(bool)>(73, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 40 },
+        QtMocHelpers::SlotData<void(bool)>(74, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 53 },
         }}),
         // Slot 'on_groupBoxAddBackgroundToText3_toggled'
-        QtMocHelpers::SlotData<void(bool)>(74, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 40 },
+        QtMocHelpers::SlotData<void(bool)>(75, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 53 },
         }}),
         // Slot 'on_groupBoxAddBackgroundToText4_toggled'
-        QtMocHelpers::SlotData<void(bool)>(75, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 40 },
+        QtMocHelpers::SlotData<void(bool)>(76, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 53 },
         }}),
         // Slot 'on_toolButtonAddBKColorText_clicked'
-        QtMocHelpers::SlotData<void()>(76, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonChangeGenBKColor_clicked'
         QtMocHelpers::SlotData<void()>(77, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonAddBKColorText2_clicked'
+        // Slot 'on_toolButtonChangeGenBKColor_clicked'
         QtMocHelpers::SlotData<void()>(78, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonChangeGenBKColor2_clicked'
+        // Slot 'on_toolButtonAddBKColorText2_clicked'
         QtMocHelpers::SlotData<void()>(79, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonAddBKColorText3_clicked'
+        // Slot 'on_toolButtonChangeGenBKColor2_clicked'
         QtMocHelpers::SlotData<void()>(80, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonChangeGenBKColor3_clicked'
+        // Slot 'on_toolButtonAddBKColorText3_clicked'
         QtMocHelpers::SlotData<void()>(81, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonAddBKColorText4_clicked'
+        // Slot 'on_toolButtonChangeGenBKColor3_clicked'
         QtMocHelpers::SlotData<void()>(82, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'on_toolButtonChangeGenBKColor4_clicked'
+        // Slot 'on_toolButtonAddBKColorText4_clicked'
         QtMocHelpers::SlotData<void()>(83, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'on_toolButtonChangeGenBKColor4_clicked'
+        QtMocHelpers::SlotData<void()>(84, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_groupBoxUseDisp2_toggled'
-        QtMocHelpers::SlotData<void(bool)>(84, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 40 },
+        QtMocHelpers::SlotData<void(bool)>(85, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 53 },
         }}),
         // Slot 'on_groupBoxUseDisp3_toggled'
-        QtMocHelpers::SlotData<void(bool)>(85, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 40 },
+        QtMocHelpers::SlotData<void(bool)>(86, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 53 },
         }}),
         // Slot 'on_groupBoxUseDisp4_toggled'
-        QtMocHelpers::SlotData<void(bool)>(86, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Bool, 40 },
+        QtMocHelpers::SlotData<void(bool)>(87, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Bool, 53 },
         }}),
         // Slot 'on_pushButtonDefault_clicked'
-        QtMocHelpers::SlotData<void()>(87, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(88, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'getFontText'
-        QtMocHelpers::SlotData<QString(QFont)>(88, 2, QMC::AccessPrivate, QMetaType::QString, {{
-            { 0x80000000 | 89, 90 },
+        QtMocHelpers::SlotData<QString(QFont)>(89, 2, QMC::AccessPrivate, QMetaType::QString, {{
+            { 0x80000000 | 90, 91 },
         }}),
         // Slot 'on_pushButtonApplyToAll_clicked'
-        QtMocHelpers::SlotData<void()>(91, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(92, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -376,14 +377,14 @@ void BibleSettingWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, i
         case 17: _t->updateTrinaryBibleMenu3(); break;
         case 18: _t->updateTrinaryBibleMenu4(); break;
         case 19: _t->updateOperatorBibleMenu(); break;
-        case 20: _t->on_comboBoxPrimaryBible_activated((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 21: _t->on_comboBoxPrimaryBible2_activated((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 22: _t->on_comboBoxPrimaryBible3_activated((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 23: _t->on_comboBoxPrimaryBible4_activated((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 24: _t->on_comboBoxSecondaryBible_activated((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 25: _t->on_comboBoxSecondaryBible2_activated((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 26: _t->on_comboBoxSecondaryBible3_activated((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
-        case 27: _t->on_comboBoxSecondaryBible4_activated((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 20: _t->on_comboBoxPrimaryBible_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 21: _t->on_comboBoxPrimaryBible2_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 22: _t->on_comboBoxPrimaryBible3_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 23: _t->on_comboBoxPrimaryBible4_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 24: _t->on_comboBoxSecondaryBible_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 25: _t->on_comboBoxSecondaryBible2_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 26: _t->on_comboBoxSecondaryBible3_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
+        case 27: _t->on_comboBoxSecondaryBible4_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
         case 28: _t->on_buttonBrowseBackground_clicked(); break;
         case 29: _t->on_buttonBrowseBackground2_clicked(); break;
         case 30: _t->on_buttonBrowseBackground3_clicked(); break;

@@ -83,6 +83,14 @@ SoftProjector::SoftProjector(QWidget *parent)
     // Apply Settings
     applySetting(mySettings.general, theme, mySettings.slideSets, mySettings.bibleSets, mySettings.bibleSets2, mySettings.bibleSets3, mySettings.bibleSets4);
 
+    // Safe defaults in case disableScreens is set and positionDisplayWindow()
+    // (which otherwise computes the real values below, based on actual
+    // monitor count) is skipped entirely.
+    isSingleScreen = true;
+    hasDisplayScreen2 = false;
+    hasDisplayScreen3 = false;
+    hasDisplayScreen4 = false;
+
     if (!mySettings.general.disableScreens) {
         positionDisplayWindow();
     }
@@ -90,10 +98,7 @@ SoftProjector::SoftProjector(QWidget *parent)
     showing = false;
     displayClosed = false;
     new_list = false;
-    isSingleScreen = true;
-    hasDisplayScreen2 = false;
-    hasDisplayScreen3 = false;
-    hasDisplayScreen4 = false;
+    pType = BIBLE;
 
     ui->projectTab->clear();
     ui->projectTab->addTab(bibleWidget,QIcon(":/icons/icons/book.png"), tr("Bible (F6)"));
@@ -906,12 +911,6 @@ void SoftProjector::updateScreen()
     // Display the specified row of the show (rightmost) table to
     // the display
     int currentRow = ui->listShow->currentRow();
-
-    qDebug() << "[SP diag] updateScreen(): showing=" << showing << " pType=" << pType
-             << " currentRow=" << currentRow << " isSingleScreen=" << isSingleScreen
-             << " passive.useBackground=" << theme.passive.useBackground
-             << " passive.backgroundPix.isNull=" << theme.passive.backgroundPix.isNull()
-             << " passive.backgroundPix.size=" << theme.passive.backgroundPix.size();
 
     if(!showing)
     {

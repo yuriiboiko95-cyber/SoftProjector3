@@ -25,12 +25,12 @@
 	<key>CFBundleAllowMixedLocalizations</key>
 	<true/>
 	<key>CFBundleName</key>
-	<string>SoftProjector 3.0</string>
+	<string>SoftProjector 3.1</string>
 	<key>CFBundleDisplayName</key>
-	<string>SoftProjector 3.0</string>
+	<string>SoftProjector 3.1</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0</string>
+	<string>3.1</string>
 	<key>CFBundleVersion</key>
-	<string>3.0</string>
+	<string>3.1</string>
 </dict>
 </plist>

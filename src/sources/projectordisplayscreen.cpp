@@ -229,9 +229,6 @@ void ProjectorDisplayScreen::updateScreen()
     if (!root)
         return;
 
-    qDebug() << "[PDS diag] updateScreen(): tranType=" << tranType << " isNewBack=" << isNewBack
-             << " back1to2=" << back1to2 << " text1to2=" << text1to2;
-
     QMetaObject::invokeMethod(root,"stopTransitions");
     //    QString tranType = "seq";
 

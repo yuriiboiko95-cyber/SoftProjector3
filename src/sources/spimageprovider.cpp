@@ -29,15 +29,10 @@ QPixmap SpImageProvider::requestPixmap(const QString &id, QSize *size, const QSi
 {
     Q_UNUSED(size);
     Q_UNUSED(requestedSize);
-    bool found = m_pixmaps.contains(id);
-    QPixmap p = m_pixmaps.value(id);
-    qDebug() << "[SIP diag] requestPixmap(): id=" << id << " found=" << found
-             << " size=" << p.size() << " isNull=" << p.isNull();
-    return p;
+    return m_pixmaps.value(id);
 }
 
 void SpImageProvider::setPixMap(const QString &id, const QPixmap &p)
 {
-    qDebug() << "[SIP diag] setPixMap(): id=" << id << " size=" << p.size() << " isNull=" << p.isNull();
     m_pixmaps[id] = p;
 }

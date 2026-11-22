@@ -847,47 +847,55 @@ void BibleSettingWidget::setDispScreen4Visible(bool visible)
     ui->groupBoxUseDisp4->setVisible(visible);
 }
 
-void BibleSettingWidget::on_comboBoxPrimaryBible_activated(const QString &arg1)
+void BibleSettingWidget::on_comboBoxPrimaryBible_activated(int index)
 {
+    Q_UNUSED(index);
     updateSecondaryBibleMenu();
     updateOperatorBibleMenu();
 }
 
-void BibleSettingWidget::on_comboBoxPrimaryBible2_activated(const QString &arg1)
+void BibleSettingWidget::on_comboBoxPrimaryBible2_activated(int index)
 {
+    Q_UNUSED(index);
     updateSecondaryBibleMenu2();
     updateTrinaryBibleMenu2();
 }
 
-void BibleSettingWidget::on_comboBoxPrimaryBible3_activated(const QString &arg1)
+void BibleSettingWidget::on_comboBoxPrimaryBible3_activated(int index)
 {
+    Q_UNUSED(index);
     updateSecondaryBibleMenu3();
     updateTrinaryBibleMenu3();
 }
 
-void BibleSettingWidget::on_comboBoxPrimaryBible4_activated(const QString &arg1)
+void BibleSettingWidget::on_comboBoxPrimaryBible4_activated(int index)
 {
+    Q_UNUSED(index);
     updateSecondaryBibleMenu4();
     updateTrinaryBibleMenu4();
 }
 
-void BibleSettingWidget::on_comboBoxSecondaryBible_activated(const QString &arg1)
+void BibleSettingWidget::on_comboBoxSecondaryBible_activated(int index)
 {
+    Q_UNUSED(index);
     updateTrinaryBibleMenu();
 }
 
-void BibleSettingWidget::on_comboBoxSecondaryBible2_activated(const QString &arg1)
+void BibleSettingWidget::on_comboBoxSecondaryBible2_activated(int index)
 {
+    Q_UNUSED(index);
     updateTrinaryBibleMenu2();
 }
 
-void BibleSettingWidget::on_comboBoxSecondaryBible3_activated(const QString &arg1)
+void BibleSettingWidget::on_comboBoxSecondaryBible3_activated(int index)
 {
+    Q_UNUSED(index);
     updateTrinaryBibleMenu3();
 }
 
-void BibleSettingWidget::on_comboBoxSecondaryBible4_activated(const QString &arg1)
+void BibleSettingWidget::on_comboBoxSecondaryBible4_activated(int index)
 {
+    Q_UNUSED(index);
     updateTrinaryBibleMenu4();
 }
 

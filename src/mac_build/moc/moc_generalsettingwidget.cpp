@@ -57,9 +57,8 @@ template <> constexpr inline auto GeneralSettingWidget::qt_create_metaobjectdata
         "loadThemes",
         "loadSettings",
         "on_comboBoxDisplayScreen_activated",
-        "arg1",
-        "on_comboBoxDisplayScreen_2_activated",
         "index",
+        "on_comboBoxDisplayScreen_2_activated",
         "on_comboBoxDisplayScreen_3_activated",
         "on_comboBoxDisplayScreen_4_activated",
         "on_pushButtonAddTheme_clicked",
@@ -99,29 +98,29 @@ template <> constexpr inline auto GeneralSettingWidget::qt_create_metaobjectdata
         // Slot 'loadSettings'
         QtMocHelpers::SlotData<void()>(15, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_comboBoxDisplayScreen_activated'
-        QtMocHelpers::SlotData<void(const QString &)>(16, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::QString, 17 },
+        QtMocHelpers::SlotData<void(int)>(16, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 17 },
         }}),
         // Slot 'on_comboBoxDisplayScreen_2_activated'
         QtMocHelpers::SlotData<void(int)>(18, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 19 },
+            { QMetaType::Int, 17 },
         }}),
         // Slot 'on_comboBoxDisplayScreen_3_activated'
-        QtMocHelpers::SlotData<void(int)>(20, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 19 },
+        QtMocHelpers::SlotData<void(int)>(19, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 17 },
         }}),
         // Slot 'on_comboBoxDisplayScreen_4_activated'
-        QtMocHelpers::SlotData<void(int)>(21, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 19 },
+        QtMocHelpers::SlotData<void(int)>(20, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 17 },
         }}),
         // Slot 'on_pushButtonAddTheme_clicked'
-        QtMocHelpers::SlotData<void()>(22, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(21, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'on_comboBoxTheme_activated'
-        QtMocHelpers::SlotData<void(int)>(23, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { QMetaType::Int, 19 },
+        QtMocHelpers::SlotData<void(int)>(22, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { QMetaType::Int, 17 },
         }}),
         // Slot 'on_checkBoxUseDarkTheme_clicked'
-        QtMocHelpers::SlotData<void()>(24, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(23, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -156,7 +155,7 @@ void GeneralSettingWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c,
         case 7: _t->on_pushButtonDefault_clicked(); break;
         case 8: _t->loadThemes(); break;
         case 9: _t->loadSettings(); break;
-        case 10: _t->on_comboBoxDisplayScreen_activated((*reinterpret_cast<std::add_pointer_t<QString>>(_a[1]))); break;
+        case 10: _t->on_comboBoxDisplayScreen_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
         case 11: _t->on_comboBoxDisplayScreen_2_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
         case 12: _t->on_comboBoxDisplayScreen_3_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
         case 13: _t->on_comboBoxDisplayScreen_4_activated((*reinterpret_cast<std::add_pointer_t<int>>(_a[1]))); break;
