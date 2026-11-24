@@ -141,6 +141,15 @@ SoftProjector::SoftProjector(QWidget *parent)
     connect(songWidget,SIGNAL(addToSchedule(Song&)),this,SLOT(addToShcedule(Song&)));
     connect(announceWidget,SIGNAL(addToSchedule(Announcement&)),this,SLOT(addToShcedule(Announcement&)));
 
+    // Toolbars don't need to be user-draggable/undockable, and leaving them
+    // movable triggers macOS/Qt's drag-handle hover cursor, which has been
+    // observed to crash (QImage::toCGImage() failing CoreGraphics image
+    // parameter validation) on some macOS versions.
+    ui->toolBarFile->setMovable(false);
+    ui->toolBarSchedule->setMovable(false);
+    ui->toolBarEdit->setMovable(false);
+    ui->toolBarShow->setMovable(false);
+
     // Add tool bar actions
     ui->toolBarFile->addAction(ui->actionNewSchedule);
     ui->toolBarFile->addAction(ui->actionOpenSchedule);
@@ -968,17 +977,31 @@ void SoftProjector::updateScreen()
     {
         if (!mySettings.general.disableScreens)
         {
+            bool wasHidden = pds1->isHidden();
+
             if(isSingleScreen)
             {
-                if(pds1->isHidden())
+                if(wasHidden)
                     showDisplayScreen(true);
             }
             else
             {
-                if(pds1->isHidden() || !ui->actionCloseDisplay->isChecked())
+                if(wasHidden || !ui->actionCloseDisplay->isChecked())
                 {
                     ui->actionCloseDisplay->trigger();
                 }
+            }
+
+            if(wasHidden)
+            {
+                // The very first time pds1 is shown, its native window
+                // surface isn't exposed/painted yet - showFullScreen() only
+                // requests it asynchronously. Rendering content immediately
+                // afterwards (below) can race that first paint on some
+                // machines/GPUs, leaving a black screen until the next
+                // render. Processing events here lets the window finish
+                // its initial expose before we touch the QML scene.
+                qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
             }
         }
 
