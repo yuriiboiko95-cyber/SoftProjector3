@@ -417,6 +417,26 @@ void SoftProjector::showDisplayScreen(bool show)
 
 }
 
+void SoftProjector::waitForWindowExposed(QWidget *w, int timeoutMs)
+{
+    // The first time a ProjectorDisplayScreen is shown, showFullScreen()
+    // only requests the native window asynchronously - its surface isn't
+    // actually exposed/painted yet. On setups with several displays (each
+    // getting its own window shown at once), the compositor can take a
+    // noticeable moment to catch up, and rendering content into the QML
+    // scene before that completes can be missed on the first paint,
+    // leaving a black screen until something else forces a repaint.
+    if (!w)
+        return;
+
+    QElapsedTimer timer;
+    timer.start();
+    while (!(w->windowHandle() && w->windowHandle()->isExposed()) && timer.elapsed() < timeoutMs)
+    {
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+    }
+}
+
 void SoftProjector::saveSettings()
 {
     // Save splitter states
@@ -994,14 +1014,17 @@ void SoftProjector::updateScreen()
 
             if(wasHidden)
             {
-                // The very first time pds1 is shown, its native window
-                // surface isn't exposed/painted yet - showFullScreen() only
-                // requests it asynchronously. Rendering content immediately
-                // afterwards (below) can race that first paint on some
-                // machines/GPUs, leaving a black screen until the next
-                // render. Processing events here lets the window finish
-                // its initial expose before we touch the QML scene.
-                qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+                // All of pds1-4 may have just been shown together (see
+                // on_actionCloseDisplay_triggered()) - wait for each
+                // configured one to actually finish its first paint before
+                // rendering content into them below.
+                waitForWindowExposed(pds1);
+                if(hasDisplayScreen2)
+                    waitForWindowExposed(pds2);
+                if(hasDisplayScreen3)
+                    waitForWindowExposed(pds3);
+                if(hasDisplayScreen4)
+                    waitForWindowExposed(pds4);
             }
         }
 

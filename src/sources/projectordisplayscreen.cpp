@@ -368,6 +368,11 @@ void ProjectorDisplayScreen::renderPassiveText(QPixmap &back, bool useBack)
 
 void ProjectorDisplayScreen::renderBibleText(Verse bVerse, BibleSettings &bSets)
 {
+    qDebug() << "[diag] renderBibleText(): useBackground=" << bSets.useBackground
+             << " backgroundPix.isNull=" << bSets.backgroundPix.isNull()
+             << " backgroundPix.size=" << bSets.backgroundPix.size()
+             << " backgroundName=" << bSets.backgroundName;
+
     // TODO: This is temporary until database is fixed
     if(bSets.useFading)
     {

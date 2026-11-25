@@ -153,6 +153,7 @@ private:
     bool songSplitVerse;
 private slots:
     void showDisplayScreen(bool show);
+    void waitForWindowExposed(QWidget *w, int timeoutMs = 500);
 
     void applySetting(GeneralSettings &g, Theme &t, SlideShowSettings &s,
                       BibleVersionSettings &b1, BibleVersionSettings &b2,
