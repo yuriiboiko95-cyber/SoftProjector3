@@ -390,7 +390,9 @@ void GeneralSettingWidget::on_checkBoxUseDarkTheme_clicked()
 
 void GeneralSettingWidget::on_pushButtonIdentifyScreens_clicked()
 {
-    // Show the screen number in large text on every screen for a few seconds
+    // Show the screen number and name in the bottom-right corner of every
+    // screen for a few seconds - small enough not to get in the way of
+    // whatever's already on screen.
     QList<QScreen*> screens = QGuiApplication::screens();
     for(int i(0);i<screens.count();++i)
     {
@@ -399,13 +401,16 @@ void GeneralSettingWidget::on_pushButtonIdentifyScreens_clicked()
         l->setAttribute(Qt::WA_DeleteOnClose);
         l->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
         l->setAlignment(Qt::AlignCenter);
-        l->setStyleSheet("QLabel { background-color: black; color: white; border: 6px solid white; }");
+        l->setStyleSheet("QLabel { background-color: black; color: white; border: 2px solid white; }");
         QFont f = l->font();
-        f.setPointSize(s->geometry().height()/12);
+        f.setPointSize(s->geometry().height()/50);
         f.setBold(true);
         l->setFont(f);
         QRect g = s->geometry();
-        l->setGeometry(g.x()+g.width()/4, g.y()+g.height()/4, g.width()/2, g.height()/2);
+        int w = g.width()/12;
+        int h = g.height()/16;
+        int margin = 20;
+        l->setGeometry(g.x()+g.width()-w-margin, g.y()+g.height()-h-margin, w, h);
         l->show();
         QTimer::singleShot(4000, l, &QLabel::close);
     }

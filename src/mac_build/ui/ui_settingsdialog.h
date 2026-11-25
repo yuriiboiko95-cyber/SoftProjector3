@@ -80,7 +80,7 @@ public:
     {
         if (SettingsDialog->objectName().isEmpty())
             SettingsDialog->setObjectName("SettingsDialog");
-        SettingsDialog->resize(675, 600);
+        SettingsDialog->resize(900, 600);
         QIcon icon;
         icon.addFile(QString::fromUtf8(":/icons/icons/settings.png"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         SettingsDialog->setWindowIcon(icon);
